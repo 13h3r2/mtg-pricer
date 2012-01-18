@@ -1,9 +1,6 @@
 .cache
 .idea/
 atlassian-ide-plugin.xml
-*.iml
-*.ipr
-*.iws
 billing-common/src/main/resources/settings.properties
 billing-tests/test-output/
 target/
