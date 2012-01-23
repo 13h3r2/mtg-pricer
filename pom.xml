@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>mtg-pricer</groupId>
     <version>1.0.0</version>
@@ -26,18 +27,25 @@
     <properties>
         <scala.version>2.9.0-1</scala.version>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <version>2.14.2</version>
-            </plugin>
-        </plugins>
-    </build>
-
+    <!--
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.scala-tools</groupId>
+                    <artifactId>maven-scala-plugin</artifactId>
+                    <version>2.14.2</version>
+                </plugin>
+            </plugins>
+        </build>
+    -->
     <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+        <!--
+
         <dependency>
             <groupId>org.scalaz</groupId>
             <artifactId>scalaz-core_${scala.version}</artifactId>
@@ -48,6 +56,7 @@
             <artifactId>scalaz-http_${scala.version}</artifactId>
             <version>6.0.3</version>
         </dependency>
+        -->
         <dependency>
             <groupId>nu.validator.htmlparser</groupId>
             <artifactId>htmlparser</artifactId>
@@ -57,6 +66,11 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mongodb.casbah</groupId>
+            <artifactId>casbah_2.9.0-1</artifactId>
+            <version>2.1.5.0</version>
         </dependency>
 
 
