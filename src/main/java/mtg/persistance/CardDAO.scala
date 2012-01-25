@@ -1,22 +1,40 @@
 package mtg.persistance
 
-import mtg.Card
-import com.mongodb.casbah.MongoConnection
 import com.mongodb.casbah.commons.MongoDBObject
+import mtg.model.{CardPrice, Card}
 
-trait Connection {
-  val connection = MongoConnection()("mtg")
-}
 
 object CardDAO extends Connection {
 
-  lazy val collection = connection("cards")
+  lazy val cardCollection = connection("card")
+  lazy val priceCollection = connection("price")
 
-  def save(card: Card) = {
+  def savePrice(price: CardPrice) = {
+
+    //save card to card collection if missed
+    saveCard(price.card);
+
+    //update price
+    val builder = MongoDBObject.newBuilder
+    builder += "card_name" -> price.card.name
+    builder += "condition" -> price.condition
+    builder += "edition_name" -> price.edition
+
+    val searchObject = builder.result();
+
+    builder += "price" -> price.price
+    val updateObject = builder.result();
+
+    priceCollection.update(searchObject, updateObject, true, false)
+  }
+
+  def saveCard(card: Card) = {
     val builder = MongoDBObject.newBuilder
     builder += "name" -> card.name
-    builder += "condition" -> card.condition
-    builder += "price" -> card.price
-    collection.save(builder.result)
+
+    val exists = cardCollection.findOne(builder.result())
+    if (exists.isEmpty) {
+      cardCollection.save(builder.result())
+    }
   }
 }

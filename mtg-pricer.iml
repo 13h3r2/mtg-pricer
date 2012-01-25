@@ -13,17 +13,24 @@
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.scalaz:scalaz-core_2.9.0-1:6.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.9.0-1" level="project" />
-    <orderEntry type="library" name="Maven: org.scalaz:scalaz-http_2.9.0-1:6.0.3" level="project" />
-    <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="library" name="Maven: nu.validator.htmlparser:htmlparser:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.3" level="project" />
+    <orderEntry type="library" name="Maven: com.mongodb.casbah:casbah_2.9.0-1:2.1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.mongodb.casbah:casbah-query_2.9.0-1:2.1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.mongodb.casbah:casbah-commons_2.9.0-1:2.1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.5.3" level="project" />
+    <orderEntry type="library" name="Maven: org.scalaj:scalaj-collection_2.8.0:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-tools.time:time_2.8.0:0.2" level="project" />
+    <orderEntry type="library" name="Maven: joda-time:joda-time:1.6" level="project" />
+    <orderEntry type="library" name="Maven: com.mongodb.casbah:casbah-core_2.9.0-1:2.1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.mongodb.casbah:casbah-gridfs_2.9.0-1:2.1.5.0" level="project" />
   </component>
 </module>
 
