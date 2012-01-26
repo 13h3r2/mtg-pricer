@@ -4,14 +4,15 @@ import mtg.model.CardPrice
 import mtg.persistance.CardDAO
 import actors.Actor
 import actors.scheduler.ForkJoinScheduler
+import com.weiglewilczek.slf4s.Logging
 
 trait PriceProvider {
   def getPrice(): Set[CardPrice]
 }
 
-object PriceUpdater {
+object PriceUpdater extends Logging {
 
-  def updatePrice(provider: PriceProvider): Unit = {
+  def updatePrice(provider: PriceProvider) {
     val actor = new UpdateActor()
     actor.start()
     actor ! provider
@@ -24,9 +25,9 @@ object PriceUpdater {
     def act() {
       react {
         case provider: PriceProvider =>
-          println("start " + provider)
+          logger.debug("start " + provider)
           provider.getPrice().foreach(CardDAO.savePrice(_))
-          println("end " + provider)
+          logger.debug("end " + provider)
       }
     }
   }
