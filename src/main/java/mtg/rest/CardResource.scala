@@ -26,12 +26,10 @@ class CardResource extends Connection {
     .foreach(result.put(_))
     result
   }
+}
 
-  def serialize(item: (String, AnyRef)): AnyRef = {
-    item._2
-    //    item._2 mat:ch {
-    //      case value : String => value
-    //    }
+object JSONSerializer {
+  def serialize(input : AnyVal) {
+
   }
-
 }

@@ -28,7 +28,7 @@ object CardDAO extends Connection {
     priceCollection.update(searchObject, updateObject, true, false)
   }
 
-  def saveCard(card: Card) = {
+  private def saveCard(card: Card) = {
     val builder = MongoDBObject.newBuilder
     builder += "name" -> card.name
 
