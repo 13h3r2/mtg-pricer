@@ -1,41 +1,47 @@
 package mtg.rest
 
-import javax.ws.rs.{QueryParam, GET, Path}
 import mtg.persistance.Connection
 import com.mongodb.casbah.commons.MongoDBObject
 import collection.JavaConversions
-import org.codehaus.jettison.json.{JSONArray, JSONObject}
+import javax.ws.rs.{DefaultValue, QueryParam, GET, Path}
+import com.weiglewilczek.slf4s.Logging
+import com.mongodb.{DBObject, BasicDBList}
+import org.codehaus.jettison.json.{JSONObject, JSONArray}
+import java.util.{List => JList}
 
 
 @Path("/price")
-class CardResource extends Connection {
+class CardResource extends Connection with Logging{
 
-  private val max_size : Int = 50;
+  private def max_size() : Int = 50;
 
   @GET
   def searchCard(
     @QueryParam("name") name: String,
-    @QueryParam("offset") offset: Int,
-    @QueryParam("offset") size: Int
-  ) = {
-    val maxSize = if(size > 50)  50 else size;
+    @DefaultValue("0") @QueryParam("offset") offset: Int,
+    @DefaultValue("10") @QueryParam("size") size: Int
+  ) : JSONObject = {
+    val maxSize = if (size > max_size()) max_size() else size;
+
     val builder = MongoDBObject.newBuilder
     if (name != null) builder += "card_name" -> name
 
-    connection("price")
-      .find(builder.result)
+    val result = conn("price")
+      .find(builder.result())
       .limit(maxSize)
       .skip(offset)
-      .map(obj => {
-        new JavaConversions.JSetWrapper(obj.keySet())
-          .foldLeft(new JSONObject)((array, item) => array.put(item, obj.get(item)))
-      })
+      .map(transform(_))
       .foldLeft(new JSONArray)((array, item) => array.put(item))
+    new JSONObject().put("result", result)
   }
-}
-
-object JSONSerializer {
-  def serialize(input: AnyVal) {
-
+  
+  def transform(o : AnyRef ) : AnyRef = {
+    o match {
+      case list : JList[AnyRef] =>
+        JavaConversions.JListWrapper(list).foldLeft(new JSONArray)((array, item)=>array.put(transform(item)))
+      case set : DBObject =>
+        JavaConversions.JSetWrapper(set.keySet()).foldLeft(new JSONObject)((obj, item)=>obj.put(item, transform(set.get(item))))
+      case other => other
+    }
   }
 }

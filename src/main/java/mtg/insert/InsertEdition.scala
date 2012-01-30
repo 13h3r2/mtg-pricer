@@ -8,7 +8,7 @@ object InsertEdition extends App {
 
   insertEditions()
 
-  def insertEditions() = {
+  def insertEditions() {
     EditionDAO.upsert(new Edition("3rd Edition/Revised", "1003"))
     EditionDAO.upsert(new Edition("4th Edition", "1009"))
     EditionDAO.upsert(new Edition("5th Edition", "1015"))

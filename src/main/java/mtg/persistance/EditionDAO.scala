@@ -6,7 +6,7 @@ import com.mongodb.DBObject
 
 object EditionDAO extends Connection {
 
-  lazy val collection = connection("edition")
+  lazy val collection = conn("edition")
 
   def upsert(edition: Edition) {
     val builder = MongoDBObject.newBuilder

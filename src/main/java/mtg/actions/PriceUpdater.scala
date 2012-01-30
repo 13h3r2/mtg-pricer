@@ -7,7 +7,7 @@ import actors.scheduler.ForkJoinScheduler
 import com.weiglewilczek.slf4s.Logging
 
 trait PriceProvider {
-  def getPrice(): Set[CardPrice]
+  def getPrice: Set[CardPrice]
 }
 
 object PriceUpdater extends Logging {
@@ -26,7 +26,7 @@ object PriceUpdater extends Logging {
       react {
         case provider: PriceProvider =>
           logger.debug("start " + provider)
-          provider.getPrice().foreach(CardDAO.savePrice(_))
+          provider.getPrice.foreach(CardDAO.savePrice(_))
           logger.debug("end " + provider)
       }
     }

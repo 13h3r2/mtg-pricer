@@ -1,18 +1,17 @@
 package mtg;
 
-import java.io.IOException;
-
-import com.sun.jersey.spi.container.servlet.ServletContainer;
-import org.apache.log4j.BasicConfigurator;
-
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import com.sun.grizzly.http.servlet.ServletAdapter;
 import com.sun.grizzly.tcp.http11.GrizzlyAdapter;
 import com.sun.grizzly.tcp.http11.GrizzlyRequest;
 import com.sun.grizzly.tcp.http11.GrizzlyResponse;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class Main {
 
@@ -22,6 +21,7 @@ public class Main {
 
         GrizzlyWebServer ws = new GrizzlyWebServer(19998, "src/main/webapp");
 
+        Logger.getRootLogger().setLevel(Level.WARN);
         Logger.getLogger("mtg").setLevel(Level.DEBUG);
         LoggerFactory.getLogger("mtg").info("Go!");
 

@@ -1,9 +1,9 @@
 package mtg
 
 import actions.PriceUpdater
-import model.Edition
 import persistance.EditionDAO
 import ssg.SSGPriceProvider
+import org.apache.log4j.BasicConfigurator
 
 
 /**
@@ -13,7 +13,8 @@ import ssg.SSGPriceProvider
 
 //1041 1043 1045 1047 1049 1051 1001
 object Test extends App {
-  EditionDAO.findAll(100000).foreach(e => {
+  BasicConfigurator.configure
+  EditionDAO.findAll(10000).foreach(e => {
     PriceUpdater.updatePrice(new SSGPriceProvider(e))
   })
 
