@@ -25,7 +25,7 @@
         </repository>
     </repositories>
     <properties>
-        <scala.version>2.9.0-1</scala.version>
+        <scala.version>2.9.1</scala.version>
     </properties>
 
     <dependencies>
@@ -46,8 +46,8 @@
         </dependency>
         <dependency>
             <groupId>com.mongodb.casbah</groupId>
-            <artifactId>casbah_2.9.0-1</artifactId>
-            <version>2.1.5.0</version>
+            <artifactId>casbah_2.9.1</artifactId>
+            <version>2.1.5-1</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -98,6 +98,11 @@
             <groupId>org.joda</groupId>
             <artifactId>joda-convert</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.osinka.subset</groupId>
+            <artifactId>subset_2.9.1</artifactId>
+            <version>0.6.4</version>
         </dependency>
 
     </dependencies>
