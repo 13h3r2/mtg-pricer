@@ -1,51 +1,66 @@
 package mtg
 
 import com.osinka.subset._
-import actions.PriceUpdater
-import persistance.EditionDAO
-import ssg.SSGPriceProvider
-import org.apache.log4j.BasicConfigurator
-import com.mongodb.casbah.MongoConnection._
-import com.mongodb.casbah.{MongoConnection, MongoDB}
+import com.mongodb.casbah.MongoConnection
 import com.mongodb.DBObject
-import mtg.CardPriceMapping._
+import java.util.Date
 
 
-//case class CardItem(name : String,  edition : String)
-case class CardPrice(
-                      //                      item : CardItem,
-                      price : Double)
+case class CardItem(name: String, edition: String)
 
-object CardPriceMapping {
-  //  val item = "item".subset(CardItem).of[CardItem]
-  val price = "price".fieldOf[Double]
-  implicit val xxx = ValueWriter[CardPrice]({x => x})
+case class PriceSnapShot(price: Double, date: Date)
 
-  implicit def f(obj: CardPrice): DBObject = ( (CardPriceMapping.price -> obj.price) )
+case class CardPrice(item: CardItem, prices: List[PriceSnapShot])
+
+object CardItemMapping {
+
+  import PriceSnapShotMapping._
+
+  val name = "name".fieldOf[String]
+  val edition = "edition".fieldOf[String]
+  implicit val ciWriter = ValueWriter[CardItem](ciWriterF _)
+
+  implicit def ciWriterF(obj: CardItem): DBObject = ((name -> obj.name) ~ (edition -> obj.edition))
+
 }
 
+object PriceSnapShotMapping {
+  val price = "price".fieldOf[Double]
+  val date = "date".fieldOf[Date]
+  implicit val pssWriter = ValueWriter[PriceSnapShot](pssWriterF _)
 
+  implicit def pssWriterF(obj: PriceSnapShot): DBObject = ((price -> obj.price) ~ (date -> obj.date))
 
-//1041 1043 1045 1047 1049 1051 1001
+}
+
+object CardPriceMapping {
+
+  import CardItemMapping._
+  import PriceSnapShotMapping._
+
+  val str = "str".fieldOf[String]
+  val item = "item".fieldOf[CardItem]
+  val price = "price".fieldOf[List[PriceSnapShot]]
+  implicit val writer = ValueWriter[CardPrice](writeFunction _)
+
+  implicit def writeFunction(obj: CardPrice): DBObject = ((str -> "a") ~ (item -> obj.item) ~ (price -> obj.prices)
+    )
+
+}
+
 object Test2 extends App {
 
-
-
-  //object CardItemMapping {
-  //  val cardName = "card_name".fieldOf[String]
-  //  val edition = "edition".fieldOf[String]
-  //}
-
-
-  //implicit def writer(obj : CardPrice) = ValueWriter[CardPrice](f _)
-
+  import CardPriceMapping._
 
   val priceSet = "price".subset(CardPrice).of[CardPrice]
 
-  val dbo = priceSet(new CardPrice(10))
+
+  val obj = new CardPrice(new CardItem("Taiga", "Alpha"), new PriceSnapShot(10, new Date()) :: new PriceSnapShot(20, new Date()) :: Nil)
+  val dbo = priceSet(obj)
   val coll = MongoConnection()("mtg")("card2")
 
-  coll.save(dbo)
-  
+  coll.save(obj)
+  //coll.save(dbo)
+
 }
 
