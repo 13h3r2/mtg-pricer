@@ -14,7 +14,7 @@ object Test2 extends App {
 
   val obj = new CardPrice(new CardItem("Taiga", "Alpha", "NM"), new PriceSnapshot(10, new Date(), 10) :: new PriceSnapshot(20, new Date(), 10) :: Nil)
   val dbo = priceSet(obj)
-  val coll = MongoConnection()("mtg")("card2")
+  val coll = MongoConnection()("mtg")("price")
 
   coll.save(obj)
   //coll.save(dbo)
