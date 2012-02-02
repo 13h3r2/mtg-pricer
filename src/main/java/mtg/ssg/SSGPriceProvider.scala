@@ -6,11 +6,12 @@ import xml._
 import xml.parsing.NoBindingFactoryAdapter
 import mtg.actions.PriceProvider
 import java.lang.String
-import mtg.model.{CardItem, Edition, CardPrice, Card}
+import mtg.model._
+import java.util.Date
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
-  def getPrice : Set[CardPrice] = {
-    var result: Set[CardPrice] = Set.empty
+  def getPrice: Set[(CardItem, PriceSnapshot)] = {
+    var result: Set[(CardItem, PriceSnapshot)] = Set.empty
     for (p <- new SSGPageSearch(edition)) {
       result ++= p.getCards.toSet
     }
@@ -22,7 +23,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
   }
 
 
-  protected case class SSGPageInfo(cards: Seq[CardPrice], hasNext: Boolean)
+  protected case class SSGPageInfo(cards: Seq[(CardItem, PriceSnapshot)], hasNext: Boolean)
 
   protected case class SSGPage(edition: Edition, offset: Int = 0) {
     private lazy val pageInfo: SSGPageInfo = {
@@ -74,7 +75,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
           if (currentText.length() > 3) cardName = currentText
           val condition = cells(cells.length - 4).text.trim
           val price = cells(cells.length - 2).text.trim.substring(1).toDouble
-          new CardPrice(new CardItem(new Card(cardName), edition, condition), price, -1)
+          (new CardItem(cardName, edition.name, condition), new PriceSnapshot(price, new Date(), 0))
       }
       val hasNext = tr(1).text.contains("Next")
       new SSGPageInfo(cards, hasNext)

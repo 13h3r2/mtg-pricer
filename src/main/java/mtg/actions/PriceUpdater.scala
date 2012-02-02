@@ -1,13 +1,13 @@
 package mtg.actions
 
-import mtg.model.CardPrice
 import mtg.persistance.CardDAO
 import actors.Actor
 import actors.scheduler.ForkJoinScheduler
 import com.weiglewilczek.slf4s.Logging
+import mtg.model.{PriceSnapshot, CardItem, CardPrice}
 
 trait PriceProvider {
-  def getPrice: Set[CardPrice]
+  def getPrice: Set[(CardItem, PriceSnapshot)]
 }
 
 object PriceUpdater extends Logging {
@@ -26,7 +26,7 @@ object PriceUpdater extends Logging {
       react {
         case provider: PriceProvider =>
           logger.debug("start " + provider)
-          provider.getPrice.foreach(CardDAO.savePrice(_))
+          provider.getPrice.foreach(obj => CardDAO.savePrice(obj._1, obj._2))
           logger.debug("end " + provider)
       }
     }
