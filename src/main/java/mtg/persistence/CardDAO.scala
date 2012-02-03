@@ -1,21 +1,35 @@
 package mtg.persistance
 
-import com.mongodb.casbah.commons.{MongoDBList, MongoDBObject}
-import com.mongodb.{BasicDBList, DBObject}
-import collection.JavaConversions
-import org.joda.time.{DateTime, DateMidnight, LocalDate}
 import mtg.model._
+import com.mongodb.DBObject
+import com.osinka.subset.~._
 
 
 object CardDAO extends Connection {
 
-  lazy val cardCollection = conn("card")
   lazy val priceCollection = conn("price")
 
-  def addPriceSnapshot(card : CardItem, priceSnapshot : PriceSnapshot) = {
+  def addPriceSnapshot(card: CardItem, priceSnapshot: PriceSnapshot) = {
     import mtg.model.Mapping.CardItemMapping._
-    //priceCollection.find(Mapping.CardPriceMapping.item === card).map()
-    1
+    import mtg.model.Mapping.CardPriceMapping._
+    import mtg.model.Mapping.PriceSnapShotMapping._
+
+    val dbo: Option[DBObject] = priceCollection.findOne(Mapping.CardPriceMapping.item === card)
+
+    if (dbo.isEmpty) {
+      priceCollection.save(new CardPrice(card, priceSnapshot :: Nil))
+    } else {
+      //calculate diff
+      val existingPrice : CardPrice = dbo.map(Mapping.CardPriceMapping.cpReader.unpack(_).get).get
+
+      priceSnapshot.diff = priceSnapshot.price - existingPrice.prices.last.price
+
+      priceCollection.update(
+        Mapping.CardPriceMapping.item === card,
+        Mapping.CardPriceMapping.price.push(priceSnapshot))
+    }
+
+
   }
 
 

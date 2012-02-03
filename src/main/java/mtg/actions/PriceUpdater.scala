@@ -26,7 +26,7 @@ object PriceUpdater extends Logging {
       react {
         case provider: PriceProvider =>
           logger.debug("start " + provider)
-          provider.getPrice.foreach(obj => CardDAO.savePrice(obj._1, obj._2))
+          provider.getPrice.foreach(obj => CardDAO.addPriceSnapshot(obj._1, obj._2))
           logger.debug("end " + provider)
       }
     }

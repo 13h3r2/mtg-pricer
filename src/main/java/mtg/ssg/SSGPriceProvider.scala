@@ -75,7 +75,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
           if (currentText.length() > 3) cardName = currentText
           val condition = cells(cells.length - 4).text.trim
           val price = cells(cells.length - 2).text.trim.substring(1).toDouble
-          (new CardItem(cardName, edition.name, condition), new PriceSnapshot(price, new Date(), 0))
+          (new CardItem(cardName, edition.name, condition), new PriceSnapshot(price, new Date()))
       }
       val hasNext = tr(1).text.contains("Next")
       new SSGPageInfo(cards, hasNext)
