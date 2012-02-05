@@ -1,10 +1,10 @@
 package mtg.insert
 
-import mtg.persistance.EditionDAO
 import mtg.model.Edition
+import mtg.persistence.{Connection, EditionDAO}
 
 
-object InsertEdition extends App {
+object InsertEdition extends App with Connection {
 
   insertEditions()
 

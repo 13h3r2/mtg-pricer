@@ -1,4 +1,4 @@
-package mtg.persistance
+package mtg.persistence
 
 import mtg.model._
 import com.mongodb.DBObject
@@ -10,27 +10,23 @@ object CardDAO extends Connection {
   lazy val priceCollection = conn("price")
 
   def addPriceSnapshot(card: CardItem, priceSnapshot: PriceSnapshot) = {
-    import mtg.model.Mapping.CardItemMapping._
-    import mtg.model.Mapping.CardPriceMapping._
-    import mtg.model.Mapping.PriceSnapShotMapping._
+    import mtg.model.mapping._
 
-    val dbo: Option[DBObject] = priceCollection.findOne(Mapping.CardPriceMapping.item === card)
+    val dbo: Option[DBObject] = priceCollection.findOne(CardPriceMapping.item === card)
 
     if (dbo.isEmpty) {
       priceCollection.save(new CardPrice(card, priceSnapshot :: Nil))
     } else {
       //calculate diff
-      val existingPrice : CardPrice = dbo.map(Mapping.CardPriceMapping.cpReader.unpack(_).get).get
+      val existingPrice : CardPrice = dbo.map(cpReader.unpack(_).get).get
 
-      priceSnapshot.diff = priceSnapshot.price - existingPrice.prices.last.price
+      if(!existingPrice.prices.isEmpty) {
+        priceSnapshot.diff = priceSnapshot.price - existingPrice.prices.last.price
+      }
 
       priceCollection.update(
-        Mapping.CardPriceMapping.item === card,
-        Mapping.CardPriceMapping.price.push(priceSnapshot))
+        CardPriceMapping.item === card,
+        CardPriceMapping.price.push(priceSnapshot))
     }
-
-
   }
-
-
 }

@@ -1,4 +1,4 @@
-package mtg.persistance
+package mtg.persistence
 
 import mtg.model.Edition
 import com.mongodb.casbah.commons.MongoDBObject

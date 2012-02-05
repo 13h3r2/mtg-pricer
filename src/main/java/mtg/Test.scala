@@ -1,7 +1,7 @@
 package mtg
 
 import actions.PriceUpdater
-import persistance.EditionDAO
+import persistence.EditionDAO
 import ssg.SSGPriceProvider
 import org.apache.log4j.BasicConfigurator
 

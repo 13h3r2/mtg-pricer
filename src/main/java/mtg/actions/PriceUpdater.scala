@@ -1,10 +1,10 @@
 package mtg.actions
 
-import mtg.persistance.CardDAO
+import mtg.persistence.CardDAO
 import actors.Actor
 import actors.scheduler.ForkJoinScheduler
 import com.weiglewilczek.slf4s.Logging
-import mtg.model.{PriceSnapshot, CardItem, CardPrice}
+import mtg.model.{PriceSnapshot, CardItem}
 
 trait PriceProvider {
   def getPrice: Set[(CardItem, PriceSnapshot)]

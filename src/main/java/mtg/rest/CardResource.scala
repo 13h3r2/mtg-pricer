@@ -1,6 +1,6 @@
 package mtg.rest
 
-import mtg.persistance.Connection
+import mtg.persistence.Connection
 import com.mongodb.casbah.commons.MongoDBObject
 import collection.JavaConversions
 import javax.ws.rs.{DefaultValue, QueryParam, GET, Path}
