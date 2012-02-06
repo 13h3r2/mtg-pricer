@@ -1,0 +1,33 @@
+/* Override some defaults */
+html, body {
+    background-color: #eee;
+}
+
+body {
+    padding-top: 10px;
+}
+
+.input > input {
+    min-height: 28px;
+}
+
+#main-container {
+    background-color: #dddddd;
+}
+
+/*span.uneditable-input {*/
+/*min-height: 18px;*/
+/*cursor: auto;*/
+/*}*/
+
+/*form .clearfix {*/
+/*margin-bottom: 8px;*/
+/*}*/
+
+/*#header {*/
+/*padding-bottom: 10px;*/
+/*}*/
+
+#loadingDiv {
+text-align: center;
+}
