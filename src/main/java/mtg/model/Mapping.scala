@@ -59,4 +59,11 @@ package object mapping {
   implicit var cpReader = ValueReader[CardPrice](
     {case CardPriceMapping.price(price) ~ CardPriceMapping.item(item) => new CardPrice(item, price)}
   )
+  
+
+  object PriceUpdateActionMapping {
+    val date = "date".fieldOf[Date]
+  }
+  implicit val puWritter = ValueWriter[PriceUpdateAction](puWriterFunction _)
+  implicit def puWriterFunction(obj: PriceUpdateAction) : DBObject = (PriceUpdateMapping.date -> obj.date)
 }

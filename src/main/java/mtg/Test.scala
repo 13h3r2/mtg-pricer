@@ -17,5 +17,6 @@ object Test extends App {
   EditionDAO.findAll(10000).foreach(e => {
     PriceUpdater.updatePrice(new SSGPriceProvider(e))
   })
+
 }
 
