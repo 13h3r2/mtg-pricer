@@ -5,6 +5,20 @@ import actors.Actor
 import actors.scheduler.ForkJoinScheduler
 import com.weiglewilczek.slf4s.Logging
 import mtg.model.{PriceSnapshot, CardItem}
+import mtg.ssg.SSGPriceProvider
+import mtg.persistence.{PriceUpdateActionDAO, EditionDAO}
+import mtg.model.PriceUpdateAction
+import java.util.Date
+
+object PriceUpdateCommand {
+  def doIt() = {
+    EditionDAO.findAll(10000).foreach(e => {
+      PriceUpdater.updatePrice(new SSGPriceProvider(e))
+    })
+    PriceUpdateActionDAO.insert(new PriceUpdateAction(new Date()))
+  }
+}
+
 
 trait PriceProvider {
   def getPrice: Set[(CardItem, PriceSnapshot)]

@@ -30,18 +30,8 @@ class CardResource extends Connection with Logging{
       .find(builder.result())
       .limit(maxSize)
       .skip(offset)
-      .map(transform(_))
+      .map(JSONTransformer.transform(_))
       .foldLeft(new JSONArray)((array, item) => array.put(item))
     new JSONObject().put("result", result)
-  }
-  
-  def transform(o : AnyRef ) : AnyRef = {
-    o match {
-      case list : JList[AnyRef] =>
-        JavaConversions.JListWrapper(list).foldLeft(new JSONArray)((array, item)=>array.put(transform(item)))
-      case set : DBObject =>
-        JavaConversions.JSetWrapper(set.keySet()).foldLeft(new JSONObject)((obj, item)=>obj.put(item, transform(set.get(item))))
-      case other => other
-    }
   }
 }

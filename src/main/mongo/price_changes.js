@@ -32,4 +32,6 @@ m = function (key, values) {
     });
     return result;
 };
-db.price.mapReduce(r, m, {out:{replace:"newPrices2"}});
+db.price.mapReduce(r, m, {out:{replace:"mrPriceLastChange"}});
+
+db.mrPriceLastChange.find({},{"value.info":0}).sort({"value.maxAbsChange":-1})

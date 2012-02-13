@@ -65,5 +65,5 @@ package object mapping {
     val date = "date".fieldOf[Date]
   }
   implicit val puWritter = ValueWriter[PriceUpdateAction](puWriterFunction _)
-  implicit def puWriterFunction(obj: PriceUpdateAction) : DBObject = (PriceUpdateMapping.date -> obj.date)
+  implicit def puWriterFunction(obj: PriceUpdateAction) : DBObject = (PriceUpdateActionMapping.date -> obj.date)
 }
