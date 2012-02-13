@@ -6,6 +6,7 @@ import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
 import java.util.{List => JList}
 import com.osinka.subset._
+import mtg.model.mapping.PriceSnapShotMapping
 
 
 @Path("/price/lastChanges")
@@ -20,9 +21,9 @@ class LastChangesResource extends Connection with Logging {
   : JSONObject = {
     val maxSize = if (size > max_size()) max_size() else size;
 
-    val result = conn("mrPriceLastChange")
+    val result = conn("price2")
       .find()
-      .sort("value.maxAbsChange".fieldOf[Double](-1))
+      .sort("diff".fieldOf[Double](-1))
       .limit(maxSize)
       .skip(offset)
       .map(JSONTransformer.transform(_))

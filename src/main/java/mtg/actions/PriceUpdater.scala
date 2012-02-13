@@ -21,7 +21,7 @@ object PriceUpdateCommand {
 
 
 trait PriceProvider {
-  def getPrice: Set[(CardItem, PriceSnapshot)]
+  def getPrice: Set[PriceSnapshot]
 }
 
 object PriceUpdater extends Logging {
@@ -40,7 +40,7 @@ object PriceUpdater extends Logging {
       react {
         case provider: PriceProvider =>
           logger.debug("start " + provider)
-          provider.getPrice.foreach(obj => CardDAO.addPriceSnapshot(obj._1, obj._2))
+          provider.getPrice.foreach(obj => CardDAO.savePriceSnapshot(obj))
           logger.debug("end " + provider)
       }
     }

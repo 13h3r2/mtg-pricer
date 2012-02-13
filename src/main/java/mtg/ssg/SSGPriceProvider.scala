@@ -10,8 +10,8 @@ import mtg.model._
 import java.util.Date
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
-  def getPrice: Set[(CardItem, PriceSnapshot)] = {
-    var result: Set[(CardItem, PriceSnapshot)] = Set.empty
+  def getPrice: Set[PriceSnapshot] = {
+    var result: Set[PriceSnapshot] = Set.empty
     for (p <- new SSGPageSearch(edition)) {
       result ++= p.getCards.toSet
     }
@@ -23,7 +23,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
   }
 
 
-  protected case class SSGPageInfo(cards: Seq[(CardItem, PriceSnapshot)], hasNext: Boolean)
+  protected case class SSGPageInfo(cards: Seq[PriceSnapshot], hasNext: Boolean)
 
   protected case class SSGPage(edition: Edition, offset: Int = 0) {
     private lazy val pageInfo: SSGPageInfo = {
@@ -36,7 +36,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
         SSGPageParser.parse(edition, url.openConnection().getInputStream)
       }
       catch {
-        case e => throw new RuntimeException(url.toString, e)
+          case e => throw new RuntimeException(url.toString, e)
       }
     }
 
@@ -72,10 +72,10 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
         W =>
           val cells = (W \\ "td")
           val currentText = cells(0).text.trim
-          if (currentText.length() > 3) cardName = currentText
+          if (currentText.length() > 2) cardName = currentText
           val condition = cells(cells.length - 4).text.trim
-          val price = cells(cells.length - 2).text.trim.substring(1).toDouble
-          (new CardItem(cardName, edition.name, condition), new PriceSnapshot(price, new Date()))
+          val price = (cells(cells.length - 2).text.trim.substring(1).toDouble * 100).toInt / 100.0
+          new PriceSnapshot(new CardItem(cardName, edition.name, condition), price, new Date())
       }
       val hasNext = tr(1).text.contains("Next")
       new SSGPageInfo(cards, hasNext)

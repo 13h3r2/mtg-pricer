@@ -35,31 +35,19 @@ package object mapping {
 
   object PriceSnapShotMapping extends Logging {
     import CardItemMapping._
+    val item = "item".fieldOf[CardItem]
     val price = "price".fieldOf[Double]
     val date = "date".fieldOf[Date]
     val diff = "diff".fieldOf[Double]
   }
   implicit val psWriter = ValueWriter[PriceSnapshot](psWriterF _)
   implicit def psWriterF(obj: PriceSnapshot) : DBObject =
-    (PriceSnapShotMapping.price -> obj.price) ~ (PriceSnapShotMapping.date -> obj.date) ~ (PriceSnapShotMapping.diff -> obj.diff)
-  implicit var psReader = ValueReader[PriceSnapshot]({
-    case (PriceSnapShotMapping.price(p) ~ PriceSnapShotMapping.diff(d) ~ PriceSnapShotMapping.date(da))
-    => new PriceSnapshot(p, da, d)
-  })
+    (PriceSnapShotMapping.price -> obj.price) ~ (PriceSnapShotMapping.date -> obj.date) ~ (PriceSnapShotMapping.diff -> obj.diff) ~ (PriceSnapShotMapping.item -> obj.item)
 
-  object CardPriceMapping extends Logging{
-    import PriceSnapShotMapping._
-    import CardItemMapping._
-    val item = "item".fieldOf[CardItem]
-    val price = "price".subset(PriceSnapshot).of[List[PriceSnapshot]]
-  }
-  implicit val cpWriter = ValueWriter[CardPrice](cpWriteFunction _)
-  implicit def cpWriteFunction(obj: CardPrice): DBObject =
-    (CardPriceMapping.item -> obj.item) ~ (CardPriceMapping.price -> obj.prices)
-  implicit var cpReader = ValueReader[CardPrice](
-    {case CardPriceMapping.price(price) ~ CardPriceMapping.item(item) => new CardPrice(item, price)}
-  )
-  
+  implicit var psReader = ValueReader[PriceSnapshot]({
+    case (PriceSnapShotMapping.price(p) ~ PriceSnapShotMapping.diff(d) ~ PriceSnapShotMapping.date(da) ~ PriceSnapShotMapping.item(i))
+    => new PriceSnapshot(i, p, da, d)
+  })
 
   object PriceUpdateActionMapping {
     val date = "date".fieldOf[Date]

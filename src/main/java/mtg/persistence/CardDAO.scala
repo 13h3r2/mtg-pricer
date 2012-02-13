@@ -2,31 +2,38 @@ package mtg.persistence
 
 import mtg.model._
 import com.mongodb.DBObject
-import com.osinka.subset.~._
+import com.osinka.subset._
+import scala.math
+import math.BigDecimal.RoundingMode
 
 
 object CardDAO extends Connection {
 
-  lazy val priceCollection = conn("price")
+  lazy val priceCollection = conn("price2")
 
-  def addPriceSnapshot(card: CardItem, priceSnapshot: PriceSnapshot) = {
+  def savePriceSnapshot(priceSnapshot: PriceSnapshot) = {
     import mtg.model.mapping._
 
-    val dbo: Option[DBObject] = priceCollection.findOne(CardPriceMapping.item === card)
+    val list = priceCollection
+      .find(PriceSnapShotMapping.item === priceSnapshot.item)
+      .sort("date".fieldOf[Int](-1))
+      .limit(1)
+      .toIterable
+      .toList
+    val dbo: Option[DBObject] = list.collectFirst({
+      case x => x
+    });
+
 
     if (dbo.isEmpty) {
-      priceCollection.save(new CardPrice(card, priceSnapshot :: Nil))
+      priceSnapshot.diff = 0
+      priceCollection.save(priceSnapshot)
     } else {
-      //calculate diff
-      val existingPrice : CardPrice = dbo.map(cpReader.unpack(_).get).get
-
-      if(!existingPrice.prices.isEmpty) {
-        priceSnapshot.diff = priceSnapshot.price - existingPrice.prices.last.price
+      priceSnapshot.diff = BigDecimal(priceSnapshot.price - dbo.get.get("price").asInstanceOf[Double])
+        .setScale(2, RoundingMode.HALF_DOWN).toDouble
+      if (priceSnapshot.diff.abs >= 0.01) {
+        priceCollection.save(priceSnapshot)
       }
-
-      priceCollection.update(
-        CardPriceMapping.item === card,
-        CardPriceMapping.price.push(priceSnapshot))
     }
   }
 }

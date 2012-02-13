@@ -17,7 +17,7 @@ function Navigation(page) {
                     console.log("r" +  result);
                     for(var i in result) {
                         console.log(i);
-                        page.changes.push(new PriceChange(result[i]["_id"], result[i]["value"]["maxChange"]));
+                        page.changes.push(new PriceChange(result[i]["item"]["name"] + " (" + result[i]["item"]["edition"] + ")", result[i]["diff"]));
                     }
                 })
             }, "active"
