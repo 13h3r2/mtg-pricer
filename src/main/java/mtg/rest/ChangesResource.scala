@@ -8,6 +8,7 @@ import com.osinka.subset._
 import mtg.model.mapping.PriceSnapShotMapping
 import org.apache.commons.lang.time.DateUtils
 import java.util.{Calendar, Date, List => JList}
+import java.text.SimpleDateFormat
 
 
 @Path("/price/lastChanges")
@@ -17,8 +18,8 @@ class ChangesResource extends Connection with Logging {
 
   @GET
   def searchCard(
-      @DefaultValue("") @QueryParam("dateStart") dateStart: String,
-      @DefaultValue("") @QueryParam("dateEnd") dateEnd: String,
+      @DefaultValue("") @QueryParam("from") dateStart: String,
+      @DefaultValue("") @QueryParam("to") dateEnd: String,
       @DefaultValue("0") @QueryParam("offset") offset: Int,
       @DefaultValue("20") @QueryParam("size") size: Int
                   )
@@ -27,11 +28,20 @@ class ChangesResource extends Connection with Logging {
 
 
     val today = new Date()
-    val begin = DateUtils.truncate(today, Calendar.DATE)
-    val end = DateUtils.truncate(DateUtils.addDays(today, 1), Calendar.DATE)
+    var begin = DateUtils.truncate(today, Calendar.DATE)
+    if( !dateStart.isEmpty ) {
+      begin = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
+    }
+
+    var end = DateUtils.truncate(DateUtils.addDays(today, 1), Calendar.DATE)
+    if( !dateEnd.isEmpty ) {
+      end = new SimpleDateFormat("yyyy-MM-dd").parse(dateEnd);
+      end = DateUtils.addDays(end, 1);
+    }
+
 
     val result = conn("price2")
-      .find(PriceSnapShotMapping.date >= begin&& PriceSnapShotMapping.date < end && PriceSnapShotMapping.absDiff > 0)
+      .find(PriceSnapShotMapping.date >= begin && PriceSnapShotMapping.date < end && PriceSnapShotMapping.absDiff > 0)
       .sort("absDiff".fieldOf[Double](-1))
       .limit(maxSize)
       .skip(offset)

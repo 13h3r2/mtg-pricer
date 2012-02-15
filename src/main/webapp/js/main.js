@@ -9,7 +9,7 @@ function PriceChange(name, diff, edition, condition) {
     this.edition = edition;
     this.condition = condition;
     this.diff = diff;
-    this.fullName = function() {
+    this.fullName = function () {
         return this.name + " - " + this.edition + " (" + this.condition + ")";
     };
 }
@@ -24,23 +24,25 @@ function NavigationItem(name, action, style) {
 function Navigation(page) {
     this.items = ko.observableArray([
         new NavigationItem("Last day changes", function () {
-                _ajaxCall("/api/price/lastChanges", function (json) {
-                    page.changesPanel.changes.removeAll();
-                    var result = json["result"];
-                    for(var i in result) {
-                        var item = result[i]["item"];
-                        page.changesPanel.changes.push(new PriceChange(item["name"], result[i]["diff"], item["edition"], item["condition"]));
-                    }
-                })
+                _ajaxCall("/api/price/lastChanges?from=" + page.changesPanel.from() + "&to=" + page.changesPanel.to(),
+                    function (json) {
+                        page.changesPanel.changes.removeAll();
+                        var result = json["result"];
+                        for (var i in result) {
+                            var item = result[i]["item"];
+                            page.changesPanel.changes.push(new PriceChange(item["name"], result[i]["diff"], item["edition"], item["condition"]));
+                        }
+                    })
             }, "active"
         )]
     );
 }
 
 function ChangesPanel(page) {
-    //this.searchDate = ko.observable(new Date())
     this.changes = ko.observableArray([
     ]);
+    this.from = ko.observable($.datepicker.formatDate('yy-mm-dd', new Date()));
+    this.to = ko.observable($.datepicker.formatDate('yy-mm-dd', new Date()));
 }
 
 function Page() {

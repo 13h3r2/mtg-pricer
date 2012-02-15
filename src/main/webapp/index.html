@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="index.css">
     <script type='text/javascript' src='js/lib/jquery-1.7.1.js'></script>
     <script type='text/javascript' src='js/lib/jquery.tmpl.js'></script>
+    <script type='text/javascript' src='js/lib/jquery-ui-1.8.17.custom.min.js'></script>
     <script type='text/javascript' src='js/lib/knockout-2.0.0.debug.js'></script>
     <script type='text/javascript' src='js/main.js'></script>
     <script type='text/javascript' src='js/ajax-call.js'></script>
@@ -33,15 +34,14 @@
             </ul>
         </div>
         <div class="row"  data-bind="with: changesPanel">
-            <legend>Example form legend</legend>
             <div class="span6">
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="control-group">
-                            <label>Date range</label>
-
+                            <label>Date Range</label>
                             <div class="controls">
-                                <input type="text" class="input" value="01/05/2011"/>
+                                <input type="text" class="input span2" data-bind="value: from" />
+                                <input type="text" class="input span2" data-bind="value: to"/>
                             </div>
                         </div>
                     </fieldset>
