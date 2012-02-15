@@ -1,5 +1,6 @@
 package mtg.model
 
+import scala.math._
 import com.osinka.subset._
 import com.osinka.subset.ValueWriter._
 import com.mongodb.DBObject
@@ -39,10 +40,11 @@ package object mapping {
     val price = "price".fieldOf[Double]
     val date = "date".fieldOf[Date]
     val diff = "diff".fieldOf[Double]
+    val absDiff = "absDiff".fieldOf[Double]
   }
   implicit val psWriter = ValueWriter[PriceSnapshot](psWriterF _)
   implicit def psWriterF(obj: PriceSnapshot) : DBObject =
-    (PriceSnapShotMapping.price -> obj.price) ~ (PriceSnapShotMapping.date -> obj.date) ~ (PriceSnapShotMapping.diff -> obj.diff) ~ (PriceSnapShotMapping.item -> obj.item)
+    (PriceSnapShotMapping.price -> obj.price) ~ (PriceSnapShotMapping.date -> obj.date) ~ (PriceSnapShotMapping.diff -> obj.diff) ~ (PriceSnapShotMapping.item -> obj.item) ~ (PriceSnapShotMapping.absDiff -> abs(obj.diff))
 
   implicit var psReader = ValueReader[PriceSnapshot]({
     case (PriceSnapShotMapping.price(p) ~ PriceSnapShotMapping.diff(d) ~ PriceSnapShotMapping.date(da) ~ PriceSnapShotMapping.item(i))

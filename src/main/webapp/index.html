@@ -1,11 +1,12 @@
 <html>
 <head>
-    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="index.css">
-    <script type='text/javascript' src='jquery-1.7.1.js'></script>
-    <script type='text/javascript' src='jquery.tmpl.js'></script>
-    <script type='text/javascript' src='knockout-2.0.0.debug.js'></script>
-    <script type='text/javascript' src='main.js'></script>
+    <script type='text/javascript' src='js/lib/jquery-1.7.1.js'></script>
+    <script type='text/javascript' src='js/lib/jquery.tmpl.js'></script>
+    <script type='text/javascript' src='js/lib/knockout-2.0.0.debug.js'></script>
+    <script type='text/javascript' src='js/main.js'></script>
+    <script type='text/javascript' src='js/ajax-call.js'></script>
 
 
 </head>
@@ -24,20 +25,32 @@
 </div>
 <div class="container" id="main-container">
     <div class="page-header"><h1>Starcity pricer</h1></div>
-
     <div class="content">
+        <!--NAVIGATION-->
         <div class="row">
             <ul class="nav nav-pills" data-bind="foreach: navigation.items">
                 <li class="active"><a href="#" data-bind="text: name, click: action"></a></li>
             </ul>
         </div>
-        <!--<div class="row">-->
-            <!--<div class="span4 input"><input class="span4" name="card" data-bind="value: searchText"/></div>-->
-            <!--<div class="span2">-->
-                <!--<button class="btn" style="width: 100%">search</button>-->
-            <!--</div>-->
-        <!--</div>-->
-        <div class="row">
+        <div class="row"  data-bind="with: changesPanel">
+            <legend>Example form legend</legend>
+            <div class="span6">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="control-group">
+                            <label>Date range</label>
+
+                            <div class="controls">
+                                <input type="text" class="input" value="01/05/2011"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="row" data-bind="with: changesPanel">
             <div class="span6">
                 <table class="table table-striped table-bordered table-condensed">
                     <thead>
@@ -48,7 +61,7 @@
                     </thead>
                     <tbody data-bind="foreach: changes">
                     <tr>
-                        <td data-bind="text: name">Tundra</td>
+                        <td data-bind="text: fullName()">Tundra</td>
                         <td data-bind="text: diff">+10</td>
                     </tr>
                     </tbody>
@@ -56,6 +69,8 @@
             </div>
         </div>
     </div>
+
+</div>
 </div>
 
 </body>

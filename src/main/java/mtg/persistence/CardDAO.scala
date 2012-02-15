@@ -5,6 +5,9 @@ import com.mongodb.DBObject
 import com.osinka.subset._
 import scala.math
 import math.BigDecimal.RoundingMode
+import org.apache.commons.lang.time.DateUtils
+import java.util.{Calendar, Date}
+import mtg.model.mapping.PriceSnapShotMapping
 
 
 object CardDAO extends Connection {
@@ -22,7 +25,7 @@ object CardDAO extends Connection {
       .toList
     val dbo: Option[DBObject] = list.collectFirst({
       case x => x
-    });
+    })
 
 
     if (dbo.isEmpty) {
