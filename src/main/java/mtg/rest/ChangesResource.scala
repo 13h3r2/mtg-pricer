@@ -41,7 +41,7 @@ class ChangesResource extends Connection with Logging {
 
 
     val result = conn("price2")
-      .find(PriceSnapShotMapping.date >= begin && PriceSnapShotMapping.date < end && PriceSnapShotMapping.absDiff > 0)
+      .find(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
       .sort("absDiff".fieldOf[Double](-1))
       .limit(maxSize)
       .skip(offset)
