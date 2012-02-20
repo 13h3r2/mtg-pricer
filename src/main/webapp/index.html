@@ -34,33 +34,28 @@
             </ul>
         </div>
         <div class="row"  data-bind="with: dayChanges">
-            <div class="span6">
-                <form class="form-horizontal">
-                    <fieldset>
-                        <div class="control-group">
-                            <label>Date Range</label>
-                            <div class="controls">
-                                <input type="text" class="input span2" data-bind="value: date" />
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
+            <div class="span12">
+                <div class="pagination pagination-centered">
+                    <ul>
+                        <li><a href="#" data-bind="click: prev">&larr;</a></li>
+                        <li class="active"><a href="#" data-bind="text: dateText">1</a></li>
+                        <li><a href="#" data-bind="click: next">&rarr;</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
 
         <div class="row" data-bind="with: dayChanges">
-            <div class="span6">
-                <div align="center">
-                    <div class="btn-group" align="center">
-                        <a class="btn" href="#">prev</a>
-                        <a class="btn" href="#">1</a>
-                        <a class="btn" href="#">next</a>
-                    </div>
-                    </div>
-
-                <br>
-                <table class="table table-striped table-bordered table-condensed">
+            <div class="span12">
+                <div class="pagination pagination-centered">
+                    <ul>
+                        <li><a href="#">&larr;</a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">&rarr;</a></li>
+                    </ul>
+                </div>
+                <table class="table table-bordered table-condensed">
                     <thead>
                     <tr>
                         <th>Result</th>
@@ -71,7 +66,7 @@
                     <tbody data-bind="foreach: changes">
                     <tr>
                         <td data-bind="text: fullName()">Tundra</td>
-                        <td data-bind="text: diff">+10</td>
+                        <td data-bind="text: diff , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
                         <td data-bind="text: current">50</td>
                     </tr>
                     </tbody>

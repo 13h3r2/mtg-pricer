@@ -29,5 +29,18 @@ body {
 /*}*/
 
 #loadingDiv {
-text-align: center;
+    text-align: center;
 }
+
+.pagination {
+    margin: 10 0 5 0;
+}
+
+.table tbody tr td.changePlus {
+    background-color: #F2FFF0;
+}
+
+.table tbody tr td.changeMinus {
+    background-color: #FFF0F0;
+}
+

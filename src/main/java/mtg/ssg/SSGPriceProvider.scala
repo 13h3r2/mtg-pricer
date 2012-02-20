@@ -72,7 +72,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
         W =>
           val cells = (W \\ "td")
           val currentText = cells(0).text.trim
-          if (currentText.length() > 2) cardName = currentText
+          if (currentText.length() > 1) cardName = currentText
           val condition = cells(cells.length - 4).text.trim
           val price = (cells(cells.length - 2).text.trim.substring(1).toDouble * 100).toInt / 100.0
           new PriceSnapshot(new CardItem(cardName, edition.name, condition), price, new Date())
