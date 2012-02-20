@@ -18,8 +18,7 @@ class ChangesResource extends Connection with Logging {
 
   @GET
   def searchCard(
-      @DefaultValue("") @QueryParam("from") dateStart: String,
-      @DefaultValue("") @QueryParam("to") dateEnd: String,
+      @DefaultValue("") @QueryParam("date") dateStart: String,
       @DefaultValue("0") @QueryParam("offset") offset: Int,
       @DefaultValue("20") @QueryParam("size") size: Int
                   )
@@ -33,11 +32,7 @@ class ChangesResource extends Connection with Logging {
       begin = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
     }
 
-    var end = DateUtils.truncate(DateUtils.addDays(today, 1), Calendar.DATE)
-    if( !dateEnd.isEmpty ) {
-      end = new SimpleDateFormat("yyyy-MM-dd").parse(dateEnd);
-      end = DateUtils.addDays(end, 1);
-    }
+    var end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
 
 
     val result = conn("price2")
