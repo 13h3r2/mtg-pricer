@@ -46,18 +46,17 @@ class ChangesResource extends Connection with Logging {
   @Path("/size")
   def searchCardSize(@DefaultValue("") @QueryParam("date") dateStart: String)
   : JSONObject = {
-//    val today = new Date()
-//    var begin = DateUtils.truncate(today, Calendar.DATE)
-//    if (!dateStart.isEmpty) {
-//      begin = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
-//    }
-//
-//    val end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
-//
-//    val result = conn("price2")
-//      .count(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
-//    new JSONObject().put("result", result)
-    null
+    val today = new Date()
+    var begin = DateUtils.truncate(today, Calendar.DATE)
+    if (!dateStart.isEmpty) {
+      begin = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
+    }
+
+    val end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
+
+    val result = conn("price2")
+      .count(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
+    new JSONObject().put("result", result)
   }
 
 }

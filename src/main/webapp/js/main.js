@@ -42,26 +42,37 @@ function TableNavigationLink(name, offset) {
 
 function PriceTable(page) {
     var self = this;
-    this.currentPage = ko;
-    this.pages = ko.observableArray([TableNavigationLink("1", 0)]);
+    this.currentOffset = ko.observable(0);
+    this.pages = ko.observableArray([new TableNavigationLink("1", 0)]);
     this.changes = ko.observableArray([]);
     this.itemsPerPage = 20;
+
+    this.selectPage = function(navigationLink) {
+        if(navigationLink.offset !=  self.currentOffset()) {
+            self.currentOffset(navigationLink.offset);
+            self.loadData();
+        }
+    }
 
     this.reload = function() {
         _ajaxCall("/api/price/lastChanges/size?date=" + page.dayChanges.dateText(),
             function (json) {
+                self.pages.removeAll();
                 var count = json["result"];
                 var currentPage = 0;
                 do {
                     currentPage++;
                     self.pages.push(new TableNavigationLink("" + currentPage, (currentPage - 1) * self.itemsPerPage));
-                } while(currentPage * self.itemsPerPage <= count);
+                } while(currentPage * self.itemsPerPage < count);
+                self.currentOffset(0);
                 self.loadData();
             });
     }
 
     this.loadData = function () {
-        _ajaxCall("/api/price/lastChanges?size=20&date=" + page.dayChanges.dateText(),
+        _ajaxCall("/api/price/lastChanges?size=20" +
+            "&offset=" + self.currentOffset() +
+            "&date=" + page.dayChanges.dateText(),
             function (json) {
                 self.changes.removeAll();
                 var result = json["result"];

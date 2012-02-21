@@ -49,16 +49,18 @@
         <div class="row" data-bind="with: dayChanges.table">
             <div class="span12">
                 <div class="pagination pagination-centered">
-                    <ul data-bind="foreach: pages">
-                        <li><a href="#">&larr;</a></li>
-                        <li class="active"><a href="#" data-bind="text: name">1</a></li>
-                        <li><a href="#">&rarr;</a></li>
+                    <ul>
+                        <!-- ko foreach: pages -->
+                        <li data-bind="css : { active : $parent.currentOffset() == offset }">
+                            <a  href="#" data-bind="text: name, click: $parent.selectPage">1</a>
+                        </li>
+                        <!-- /ko -->
                     </ul>
                 </div>
                 <table class="table table-bordered table-condensed">
                     <thead>
                     <tr>
-                        <th width="70%" >Result</th>
+                        <th width="70%">Result</th>
                         <th width="10%">Change</th>
                         <th width="20%">Current</th>
                     </tr>
