@@ -461,7 +461,7 @@ jQuery.extend({
 			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 
 			// A fallback to window.onload, that will always work
-			window.addEventListener( "load", jQuery.ready, false );
+			window.addEventListener( "loadData", jQuery.ready, false );
 
 		// If IE event model is used
 		} else if ( document.attachEvent ) {
@@ -6847,7 +6847,7 @@ var r20 = /%20/g,
 	rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/,
 
 	// Keep a copy of the old load method
-	_load = jQuery.fn.load,
+	_load = jQuery.fn.loadData,
 
 	/* Prefilters
 	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)

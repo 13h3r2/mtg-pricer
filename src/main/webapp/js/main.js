@@ -24,46 +24,9 @@ function NavigationItem(name, action, style) {
 
 function Navigation(page) {
     this.items = ko.observableArray([
-        new NavigationItem("Last day changes", page.dayChanges.callChanges, "active")
+        new NavigationItem("Last day changes", page.dayChanges.table.reload, "active")
     ]
     );
-}
-
-function DayChanges(page) {
-    this.changes = ko.observableArray([]);
-    this.date = ko.observable(new Date());
-    this.dateText = ko.dependentObservable(function() {return $.datepicker.formatDate('yy-mm-dd', this.date());}, this);
-
-    this.next = function() {
-        var newDate = new Date();
-        newDate.setDate(this.date().getDate() + 1)
-        this.date(newDate);
-        this.callChanges();
-    };
-    this.prev = function() {
-        var newDate = new Date();
-        newDate.setDate(this.date().getDate() - 1)
-        this.date(newDate);
-        this.callChanges();
-    };
-
-    this.callChanges = function () {
-        _ajaxCall("/api/price/lastChanges?size=20&date=" + page.dayChanges.dateText(),
-            function (json) {
-                page.dayChanges.changes.removeAll();
-                var result = json["result"];
-                for (var i in result) {
-                    var item = result[i]["item"];
-                    page.dayChanges.changes.push(
-                        new PriceChange(
-                            item["name"],
-                            result[i]["diff"],
-                            item["edition"],
-                            item["condition"],
-                            result[i]["price"]));
-                }
-            })
-    };
 }
 
 function Page() {
@@ -72,3 +35,70 @@ function Page() {
     this.navigation = new Navigation(this.me);
 }
 
+function TableNavigationLink(name, offset) {
+    this.name = name;
+    this.offset = offset;
+}
+
+function PriceTable(page) {
+    var self = this;
+    this.currentPage = ko;
+    this.pages = ko.observableArray([TableNavigationLink("1", 0)]);
+    this.changes = ko.observableArray([]);
+    this.itemsPerPage = 20;
+
+    this.reload = function() {
+        _ajaxCall("/api/price/lastChanges/size?date=" + page.dayChanges.dateText(),
+            function (json) {
+                var count = json["result"];
+                var currentPage = 0;
+                do {
+                    currentPage++;
+                    self.pages.push(new TableNavigationLink("" + currentPage, (currentPage - 1) * self.itemsPerPage));
+                } while(currentPage * self.itemsPerPage <= count);
+                self.loadData();
+            });
+    }
+
+    this.loadData = function () {
+        _ajaxCall("/api/price/lastChanges?size=20&date=" + page.dayChanges.dateText(),
+            function (json) {
+                self.changes.removeAll();
+                var result = json["result"];
+                for (var i in result) {
+                    if(result.hasOwnProperty(i)) {
+                        var item = result[i]["item"];
+                        self.changes.push(
+                            new PriceChange(
+                                item["name"],
+                                result[i]["diff"],
+                                item["edition"],
+                                item["condition"],
+                                result[i]["price"]));
+                    }
+                }
+            })
+    };
+
+}
+function DayChanges(page) {
+    var self = this;
+    this.table = new PriceTable(page);
+    this.date = ko.observable(new Date());
+    this.dateText = ko.dependentObservable(function() {return $.datepicker.formatDate('yy-mm-dd', this.date());}, this);
+
+    this.next = function() {
+        var newDate = new Date();
+        newDate.setDate(this.date().getDate() + 1);
+        this.date(newDate);
+        this.table.reload();
+    };
+    this.prev = function() {
+        var newDate = new Date();
+        newDate.setDate(this.date().getDate() - 1);
+        this.date(newDate);
+        this.table.reload();
+    };
+
+
+}

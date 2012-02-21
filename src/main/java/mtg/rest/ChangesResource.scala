@@ -18,22 +18,19 @@ class ChangesResource extends Connection with Logging {
 
   @GET
   def searchCard(
-      @DefaultValue("") @QueryParam("date") dateStart: String,
-      @DefaultValue("0") @QueryParam("offset") offset: Int,
-      @DefaultValue("20") @QueryParam("size") size: Int
-                  )
+    @DefaultValue("") @QueryParam("date") dateStart: String,
+    @DefaultValue("0") @QueryParam("offset") offset: Int,
+    @DefaultValue("20") @QueryParam("size") size: Int)
   : JSONObject = {
     val maxSize = if (size > max_size()) max_size() else size;
 
-
     val today = new Date()
     var begin = DateUtils.truncate(today, Calendar.DATE)
-    if( !dateStart.isEmpty ) {
+    if (!dateStart.isEmpty) {
       begin = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
     }
 
-    var end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
-
+    val end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
 
     val result = conn("price2")
       .find(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
@@ -43,6 +40,24 @@ class ChangesResource extends Connection with Logging {
       .map(JSONTransformer.transform(_))
       .foldLeft(new JSONArray)((array, item) => array.put(item))
     new JSONObject().put("result", result)
+  }
+
+  @GET
+  @Path("/size")
+  def searchCardSize(@DefaultValue("") @QueryParam("date") dateStart: String)
+  : JSONObject = {
+//    val today = new Date()
+//    var begin = DateUtils.truncate(today, Calendar.DATE)
+//    if (!dateStart.isEmpty) {
+//      begin = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
+//    }
+//
+//    val end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
+//
+//    val result = conn("price2")
+//      .count(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
+//    new JSONObject().put("result", result)
+    null
   }
 
 }

@@ -46,28 +46,28 @@
         </div>
 
 
-        <div class="row" data-bind="with: dayChanges">
+        <div class="row" data-bind="with: dayChanges.table">
             <div class="span12">
                 <div class="pagination pagination-centered">
-                    <ul>
+                    <ul data-bind="foreach: pages">
                         <li><a href="#">&larr;</a></li>
-                        <li class="active"><a href="#">1</a></li>
+                        <li class="active"><a href="#" data-bind="text: name">1</a></li>
                         <li><a href="#">&rarr;</a></li>
                     </ul>
                 </div>
                 <table class="table table-bordered table-condensed">
                     <thead>
                     <tr>
-                        <th>Result</th>
-                        <th>Change</th>
-                        <th>Current</th>
+                        <th width="70%" >Result</th>
+                        <th width="10%">Change</th>
+                        <th width="20%">Current</th>
                     </tr>
                     </thead>
                     <tbody data-bind="foreach: changes">
                     <tr>
                         <td data-bind="text: fullName()">Tundra</td>
                         <td data-bind="text: diff , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
-                        <td data-bind="text: current">50</td>
+                        <td width="20%" data-bind="text: current">50</td>
                     </tr>
                     </tbody>
                 </table>
