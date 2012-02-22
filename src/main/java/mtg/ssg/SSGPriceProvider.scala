@@ -8,6 +8,7 @@ import mtg.actions.PriceProvider
 import java.lang.String
 import mtg.model._
 import java.util.Date
+import scala.math._
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
   def getPrice: Set[PriceSnapshot] = {
@@ -31,7 +32,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
         "s%5Bcor2%5D=" + edition.ssgId +
         "&%s&display=4" +
         "&startnum=" + offset +
-        "&numpage=200&for=no&foil=nofoil")
+        "&numpage=200&for=no&foil=all")
       try {
         SSGPageParser.parse(edition, url.openConnection().getInputStream)
       }
@@ -68,14 +69,19 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       val cardLines = tr.slice(2, tr.length - 4)
 
       var cardName: String = null;
+      var cardEdition: String = null;
       val cards = cardLines map {
         W =>
           val cells = (W \\ "td")
           val currentText = cells(0).text.trim
-          if (currentText.length() > 1) cardName = currentText
+          val currentEdition = cells(1).text.trim
+          if (currentText.length() > 1) {
+            cardName = currentText
+            cardEdition = currentEdition
+          }
           val condition = cells(cells.length - 4).text.trim
-          val price = (cells(cells.length - 2).text.trim.substring(1).toDouble * 100).toInt / 100.0
-          new PriceSnapshot(new CardItem(cardName, edition.name, condition), price, new Date())
+          val price = round(cells(cells.length - 2).text.trim.substring(1).toDouble * 100) / 100.0
+          new PriceSnapshot(new CardItem(cardName, cardEdition, condition), price, new Date())
       }
       val hasNext = tr(1).text.contains("Next")
       new SSGPageInfo(cards, hasNext)

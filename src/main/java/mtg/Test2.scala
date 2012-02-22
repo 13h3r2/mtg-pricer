@@ -12,6 +12,6 @@ import ssg.SSGPriceProvider
 object Test2 extends App {
 
   BasicConfigurator.configure()
-  CardDAO.savePriceSnapshot(new PriceSnapshot(new CardItem("Bayou", "Alpha", "NM/M"), 100, new Date()))
+  //val pp = new SSGPriceProvider(new Edition("a", 5173));
 }
 
