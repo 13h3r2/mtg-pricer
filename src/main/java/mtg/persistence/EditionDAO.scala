@@ -23,7 +23,8 @@ object EditionDAO extends Connection {
       val obj:DBObject = obj2
       new Edition(
         obj.get("name").asInstanceOf[String],
-        obj.get("ssgId").asInstanceOf[String]
+        obj.get("ssgId").asInstanceOf[String],
+        obj.get("aliasId").asInstanceOf[List[String]]
     )
     })
   }

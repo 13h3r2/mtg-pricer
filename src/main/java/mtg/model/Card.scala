@@ -16,5 +16,14 @@ case class PriceSnapshot(item : CardItem, price: Double, date: Date) {
 
 case class Card(name: String)
 
-case class Edition(name: String, ssgId: String)
+case class Edition(name: String, ssgId: String) {
+  var alias: List[String] = Nil
+
+  def this(name: String, ssgId: String, alias: List[String]) {
+    this(name, ssgId);
+    this.alias = alias ::: Nil;
+  }
+
+  override def toString = List(name, ssgId, alias).foldLeft("")((a, b)=> (a+","+b))
+}
 

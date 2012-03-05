@@ -8,7 +8,7 @@ import org.scala_tools.time.TypeImports._
 trait Connection {
 
   lazy val conn = {
-    MongoConnection()("mtgp")
+    MongoConnection()("mtg")
   }
 }
 

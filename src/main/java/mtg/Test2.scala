@@ -5,13 +5,13 @@ import com.osinka.subset._
 import com.mongodb.casbah.MongoConnection
 import java.util.Date
 import mtg.model._
-import mtg.persistence.CardDAO
 import org.apache.log4j.{Level, Logger, BasicConfigurator}
+import persistence.{Connection, CardDAO}
 import ssg.SSGPriceProvider
 
-object Test2 extends App {
+object Test2 extends App with Connection {
 
   BasicConfigurator.configure()
-  //val pp = new SSGPriceProvider(new Edition("a", 5173));
+  conn("edition").find().foreach(println(_));
 }
 
