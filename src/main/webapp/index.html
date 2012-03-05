@@ -45,7 +45,7 @@
             </div>
         </div>
 
-
+        <!--day changes-->
         <div class="row" data-bind="with: dayChanges.table">
             <div class="span12">
                 <div class="pagination pagination-centered">
@@ -70,6 +70,25 @@
                         <td data-bind="text: fullName()">Tundra</td>
                         <td data-bind="text: diff , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
                         <td width="20%" data-bind="text: current">50</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--editions-->
+        <div class="row" data-bind="with: editions">
+            <div class="span12">
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                    <tr>
+                        <th width="30%">Edition</th>
+                        <th width="70%">Aliases</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: editions">
+                    <tr>
+                        <td data-bind="text: name">Tundra</td>
+                        <td data-bind="text: aliases()">+10</td>
                     </tr>
                     </tbody>
                 </table>

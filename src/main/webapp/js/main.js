@@ -17,14 +17,15 @@ function PriceChange(name, diff, edition, condition, current) {
 
 function NavigationItem(name, action, style) {
     this.name = name;
-    this.action = action;
+    this.activate = action;
     this.style = style;
 }
 
 
 function Navigation(page) {
     this.items = ko.observableArray([
-        new NavigationItem("Last day changes", page.dayChanges.table.reload, "active")
+        new NavigationItem("Last day changes", page.dayChanges.table.reload, "active"),
+        new NavigationItem("Editions", page.dayChanges.table.reload, "active")
     ]
     );
 }
@@ -32,7 +33,23 @@ function Navigation(page) {
 function Page() {
     this.me = this;
     this.dayChanges = new DayChanges(this.me);
+    this.editions = new Editions(this.me);
     this.navigation = new Navigation(this.me);
+}
+
+function Edition(name, aliasCollection) {
+    this.name = name;
+    this.aliasesCollection = aliasCollection;
+    this.aliases = function() {
+        return aliasCollection.join(", ");
+    }
+}
+
+function Editions(page) {
+    this.page = page;
+    this.editions = ko.observableArray([
+        new Edition("Test", ["Test","TST", "TESTTT"] )
+    ]);
 }
 
 function TableNavigationLink(name, offset) {
