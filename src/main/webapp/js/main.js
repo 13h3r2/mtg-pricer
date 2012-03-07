@@ -15,32 +15,38 @@ function PriceChange(name, diff, edition, condition, current) {
     };
 }
 
-function NavigationItem(name, action, style) {
+function NavigationItem(navigation, name, activate) {
+    var self = this;
+    this.navigation = navigation;
     this.name = name;
-    this.activate = action;
-    this.style = style;
+    this.activate = activate;
+
+    this.click = function () {
+        self.navigation.active(this.name);
+        //self.activate();
+    }
 }
 
 
 function Navigation(page) {
     this.items = ko.observableArray([
-        new NavigationItem("Last day changes", page.dayChanges.table.reload, "active"),
-        new NavigationItem("Editions", page.dayChanges.table.reload, "active")
+        new NavigationItem(this, "Last day changes", page.dayChanges.table.reload, page.dayChanges),
+        new NavigationItem(this, "Editions", page.dayChanges.table.reload, page.editions)
     ]
     );
+    this.active = ko.observable(this.items()[0].name);
 }
 
 function Page() {
-    this.me = this;
-    this.dayChanges = new DayChanges(this.me);
-    this.editions = new Editions(this.me);
-    this.navigation = new Navigation(this.me);
+    this.dayChanges = new DayChanges(this);
+    this.editions = new Editions(this);
+    this.navigation = new Navigation(this);
 }
 
 function Edition(name, aliasCollection) {
     this.name = name;
     this.aliasesCollection = aliasCollection;
-    this.aliases = function() {
+    this.aliases = function () {
         return aliasCollection.join(", ");
     }
 }
@@ -48,7 +54,7 @@ function Edition(name, aliasCollection) {
 function Editions(page) {
     this.page = page;
     this.editions = ko.observableArray([
-        new Edition("Test", ["Test","TST", "TESTTT"] )
+        new Edition("Test", ["Test", "TST", "TESTTT"])
     ]);
 }
 
@@ -64,14 +70,14 @@ function PriceTable(page) {
     this.changes = ko.observableArray([]);
     this.itemsPerPage = 20;
 
-    this.selectPage = function(navigationLink) {
-        if(navigationLink.offset !=  self.currentOffset()) {
+    this.selectPage = function (navigationLink) {
+        if (navigationLink.offset != self.currentOffset()) {
             self.currentOffset(navigationLink.offset);
             self.loadData();
         }
     }
 
-    this.reload = function() {
+    this.reload = function () {
         _ajaxCall("/api/price/lastChanges/size?date=" + page.dayChanges.dateText(),
             function (json) {
                 self.pages.removeAll();
@@ -80,7 +86,7 @@ function PriceTable(page) {
                 do {
                     currentPage++;
                     self.pages.push(new TableNavigationLink("" + currentPage, (currentPage - 1) * self.itemsPerPage));
-                } while(currentPage * self.itemsPerPage < count);
+                } while (currentPage * self.itemsPerPage < count);
                 self.currentOffset(0);
                 self.loadData();
             });
@@ -94,7 +100,7 @@ function PriceTable(page) {
                 self.changes.removeAll();
                 var result = json["result"];
                 for (var i in result) {
-                    if(result.hasOwnProperty(i)) {
+                    if (result.hasOwnProperty(i)) {
                         var item = result[i]["item"];
                         self.changes.push(
                             new PriceChange(
@@ -113,15 +119,17 @@ function DayChanges(page) {
     var self = this;
     this.table = new PriceTable(page);
     this.date = ko.observable(new Date());
-    this.dateText = ko.dependentObservable(function() {return $.datepicker.formatDate('yy-mm-dd', this.date());}, this);
+    this.dateText = ko.dependentObservable(function () {
+        return $.datepicker.formatDate('yy-mm-dd', this.date());
+    }, this);
 
-    this.next = function() {
+    this.next = function () {
         var newDate = new Date();
         newDate.setDate(this.date().getDate() + 1);
         this.date(newDate);
         this.table.reload();
     };
-    this.prev = function() {
+    this.prev = function () {
         var newDate = new Date();
         newDate.setDate(this.date().getDate() - 1);
         this.date(newDate);

@@ -30,7 +30,7 @@
         <!--NAVIGATION-->
         <div class="row">
             <ul class="nav nav-pills" data-bind="foreach: navigation.items">
-                <li class="active"><a href="#" data-bind="text: name, click: action"></a></li>
+                <li data-bind="css: { active: $parent.navigation.active() == name }"><a href="#" data-bind="text: name, click: click"></a></li>
             </ul>
         </div>
         <div class="row"  data-bind="with: dayChanges">
