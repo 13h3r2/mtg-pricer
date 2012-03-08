@@ -15,14 +15,15 @@ function PriceChange(name, diff, edition, condition, current) {
     };
 }
 
-function NavigationItem(navigation, name, activate) {
+function NavigationItem(navigation, name, activate, panel) {
     var self = this;
     this.navigation = navigation;
     this.name = name;
     this.activate = activate;
+    this.panel = panel;
 
     this.click = function () {
-        self.navigation.active(this.name);
+        self.navigation.active(this.panel);
         //self.activate();
     }
 }
@@ -34,7 +35,7 @@ function Navigation(page) {
         new NavigationItem(this, "Editions", page.dayChanges.table.reload, page.editions)
     ]
     );
-    this.active = ko.observable(this.items()[0].name);
+    this.active = ko.observable(this.items()[0].panel);
 }
 
 function Page() {
@@ -124,14 +125,12 @@ function DayChanges(page) {
     }, this);
 
     this.next = function () {
-        var newDate = new Date();
-        newDate.setDate(this.date().getDate() + 1);
+        var newDate = new Date(this.date().getTime() + 1000 * 60 * 60 * 24);
         this.date(newDate);
         this.table.reload();
     };
     this.prev = function () {
-        var newDate = new Date();
-        newDate.setDate(this.date().getDate() - 1);
+        var newDate = new Date(this.date().getTime() - 1000 * 60 * 60 * 24);
         this.date(newDate);
         this.table.reload();
     };
