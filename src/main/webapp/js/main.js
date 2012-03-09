@@ -23,8 +23,10 @@ function NavigationItem(navigation, name, activate, panel) {
     this.panel = panel;
 
     this.click = function () {
+        //set active at navigation
         self.navigation.active(this.panel);
-        //self.activate();
+        //read data
+        self.activate();
     }
 }
 
@@ -32,7 +34,7 @@ function NavigationItem(navigation, name, activate, panel) {
 function Navigation(page) {
     this.items = ko.observableArray([
         new NavigationItem(this, "Last day changes", page.dayChanges.table.reload, page.dayChanges),
-        new NavigationItem(this, "Editions", page.dayChanges.table.reload, page.editions)
+        new NavigationItem(this, "Editions", page.editions.reload, page.editions)
     ]
     );
     this.active = ko.observable(this.items()[0].panel);
@@ -53,10 +55,26 @@ function Edition(name, aliasCollection) {
 }
 
 function Editions(page) {
+    self = this;
     this.page = page;
     this.editions = ko.observableArray([
         new Edition("Test", ["Test", "TST", "TESTTT"])
     ]);
+    this.reload = function() {
+        _ajaxCall("/api/price/edition",
+            function (json) {
+                self.editions.removeAll();
+                var result = json["result"];
+                for (var i in result) {
+                    if (result.hasOwnProperty(i)) {
+                        self.editions.push(
+                            new Edition(
+                                result[i]["name"],
+                                result[i]["alias"]));
+                    }
+                }
+            })
+    }
 }
 
 function TableNavigationLink(name, offset) {
