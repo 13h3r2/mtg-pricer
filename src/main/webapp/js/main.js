@@ -50,10 +50,16 @@ function Page() {
 }
 
 function Edition(name, aliasCollection) {
+    this.isEditMode = ko.observable(false);
     this.name = name;
     this.aliasesCollection = aliasCollection;
     this.aliases = function () {
-        return aliasCollection.join(", ");
+        return "test, test"+ aliasCollection.join(", ");
+    }
+    this.switchEdit = function() {
+        console.log("switch");
+        var newValue = !this.isEditMode;
+        this.isEditMode(newValue);
     }
 }
 

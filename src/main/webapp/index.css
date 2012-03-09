@@ -7,8 +7,10 @@ body {
     padding-top: 10px;
 }
 
-.controls > input {
-    min-height: 28px;
+input {
+    min-height: 20px;
+    padding: 0px;
+    margin: 0px;
 }
 
 #main-container {
