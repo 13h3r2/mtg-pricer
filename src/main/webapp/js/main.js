@@ -13,6 +13,9 @@ function PriceChange(name, diff, edition, condition, current) {
     this.fullName = function () {
         return this.name + " - " + this.edition + " (" + this.condition + ")";
     };
+    this.diffWithSign = function () {
+        return this.diff > 0 ? "+" + diff : diff;
+    };
 }
 
 function NavigationItem(navigation, name, activate, panel) {

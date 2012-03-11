@@ -73,7 +73,7 @@
                         <tbody data-bind="foreach: changes">
                         <tr>
                             <td data-bind="text: fullName()">Tundra</td>
-                            <td data-bind="text: diff , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
+                            <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
                             <td width="20%" data-bind="text: current">50</td>
                         </tr>
                         </tbody>
