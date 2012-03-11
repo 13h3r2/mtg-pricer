@@ -49,43 +49,6 @@ function Page() {
     this.navigation = new Navigation(this);
 }
 
-function Edition(name, aliasCollection) {
-    this.isEditMode = ko.observable(false);
-    this.name = name;
-    this.aliasesCollection = aliasCollection;
-    this.aliases = function () {
-        return "test, test"+ aliasCollection.join(", ");
-    }
-    this.switchEdit = function() {
-        console.log("switch");
-        var newValue = !this.isEditMode;
-        this.isEditMode(newValue);
-    }
-}
-
-function Editions(page) {
-    self = this;
-    this.page = page;
-    this.editions = ko.observableArray([
-        new Edition("Test", ["Test", "TST", "TESTTT"])
-    ]);
-    this.reload = function() {
-        _ajaxCall("/api/price/edition",
-            function (json) {
-                self.editions.removeAll();
-                var result = json["result"];
-                for (var i in result) {
-                    if (result.hasOwnProperty(i)) {
-                        self.editions.push(
-                            new Edition(
-                                result[i]["name"],
-                                result[i]["alias"]));
-                    }
-                }
-            })
-    }
-}
-
 function TableNavigationLink(name, offset) {
     this.name = name;
     this.offset = offset;
@@ -161,6 +124,6 @@ function DayChanges(page) {
         this.date(newDate);
         this.table.reload();
     };
-
-
 }
+
+

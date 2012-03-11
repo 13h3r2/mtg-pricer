@@ -6,6 +6,7 @@
     <script type='text/javascript' src='js/lib/jquery.tmpl.js'></script>
     <script type='text/javascript' src='js/lib/jquery-ui-1.8.17.custom.min.js'></script>
     <script type='text/javascript' src='js/lib/knockout-2.0.0.debug.js'></script>
+    <script type='text/javascript' src='js/editions.js'></script>
     <script type='text/javascript' src='js/main.js'></script>
     <script type='text/javascript' src='js/ajax-call.js'></script>
 
@@ -94,9 +95,15 @@
                     <tbody data-bind="foreach: editions">
                     <tr>
                         <td data-bind="text: name">Alpha</td>
-                        <td data-bind="click: switchEdit">
-                            <span data-bind="text: aliases(), visible: !isEditMode">ALPH, ALP</span>
-                            <input data-bind="value: aliases(), visible: isEditMode" type="text">
+                        <td >
+                            <div style="min-height:20px;min-width: 100%;" data-bind="click: switchEdit, visible: !isEditMode()">
+                            <span  data-bind="text: aliases">
+                                ALPH, ALP
+                            </span>
+                            </div>
+                            <textarea style="width: 100%;" data-bind="value: aliasesEdit, visible: isEditMode()"></textarea>
+                            <a data-bind="click: save, visible: isEditMode()" class="btn">save</a>
+                            <a data-bind="click: cancel, visible: isEditMode()" class="btn">cancel</a>
                         </td>
                     </tr>
                     </tbody>

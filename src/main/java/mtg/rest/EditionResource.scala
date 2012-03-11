@@ -1,20 +1,41 @@
 package mtg.rest
 
 import mtg.persistence.Connection
-import javax.ws.rs.{DefaultValue, QueryParam, GET, Path}
 import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
-import com.osinka.subset._
+import com.osinka.subset.stringToField
 import mtg.model.mapping.PriceSnapShotMapping
 import org.apache.commons.lang.time.DateUtils
 import java.util.{Calendar, Date, List => JList}
 import java.text.SimpleDateFormat
+import javax.ws.rs._
+import mtg.model.mapping._;
+import javax.xml.ws.RequestWrapper
 
 
-@Path("/price/edition")
+@Path("/edition")
 class EditionResource extends Connection with Logging {
 
   private def max_size(): Int = 50;
+
+  @GET
+  @Path("/update")
+  def update(
+    @QueryParam("name") editionName : String,
+    @QueryParam("alias") @DefaultValue("") aliases : String) : JSONObject = {
+
+    val newAliases = aliases
+      .split(",")
+      .map(_.trim())
+      .filter( !_.isEmpty )
+      .toList
+
+    conn("edition").update(
+      EditionMapping.name(editionName),
+      EditionMapping.alias.set(newAliases))
+
+    new JSONObject()
+  }
 
   @GET
   def searchCard()
