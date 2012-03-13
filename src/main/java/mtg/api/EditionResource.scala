@@ -1,4 +1,4 @@
-package mtg.rest
+package mtg.api
 
 import mtg.persistence.Connection
 import com.weiglewilczek.slf4s.Logging

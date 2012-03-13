@@ -30,14 +30,8 @@
 <div class="container" id="main-container">
     <div class="page-header"><h1>Pricer</h1></div>
     <div class="content">
-        <form enctype="multipart/form-data" action="/api/price/export" method="POST">
-            Choose a file to upload: <input name="uploadedfile" type="file" /><br />
-            <input type="submit" value="Upload File" />
-        </form>
-
-        <form class="well form-inline" method="POST" action="/api/price/export" enctype="multipart/form-data">
-            <!--<input type="hidden" value="file" name="test" />-->
-            <input type="file" name="file2" class="input-file"/>
+        <form class="well form-inline" method="POST" action="/export" enctype="multipart/form-data">
+            <input type="file" name="file" class="input-file"/>
             <input type="submit" class="btn" value="name" name="name" />
         </form>
         <!--NAVIGATION-->

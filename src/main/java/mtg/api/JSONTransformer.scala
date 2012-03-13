@@ -1,4 +1,4 @@
-package mtg.rest
+package mtg.api
 
 import collection.JavaConversions
 import com.mongodb.DBObject

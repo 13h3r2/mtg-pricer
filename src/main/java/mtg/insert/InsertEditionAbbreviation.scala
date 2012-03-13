@@ -93,10 +93,13 @@ object InsertEditionAbbreviation extends App with Connection {
     opt.foreach( ed => {
       val someA: Option[String] = editionAbbreviation.get(ed.name)
       someA.foreach(alias => {
-        ed.alias ::= alias
+        if(!ed.alias.contains(alias))
+          ed.alias ::= alias
       })
-      ed.alias ::= ed.name
+      if(!ed.alias.contains(ed.name))
+        ed.alias ::= ed.name
       println(ed)
+      conn("edition").update(EditionMapping.name(ed.name), EditionMapping.alias.set(ed.alias))
     }
   )});
 }

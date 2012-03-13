@@ -1,17 +1,20 @@
 package mtg;
 
+import mtg.api.ExportServlet;
+
+import java.io.IOException;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import com.sun.grizzly.http.servlet.ServletAdapter;
 import com.sun.grizzly.tcp.http11.GrizzlyAdapter;
 import com.sun.grizzly.tcp.http11.GrizzlyRequest;
 import com.sun.grizzly.tcp.http11.GrizzlyResponse;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class Main {
 
@@ -28,7 +31,7 @@ public class Main {
         // Jersey web resources
         ServletAdapter jerseyAdapter = new ServletAdapter();
         jerseyAdapter.setContextPath("/api");
-        jerseyAdapter.addInitParameter("com.sun.jersey.config.property.packages", "mtg.rest");
+        jerseyAdapter.addInitParameter("com.sun.jersey.config.property.packages", "mtg.api");
         jerseyAdapter.setServletInstance(new ServletContainer());
 
         ws.addGrizzlyAdapter(jerseyAdapter, new String[] { "/api" });
@@ -40,6 +43,12 @@ public class Main {
         };
         staticAdapter.setHandleStaticResources(true);
         ws.addGrizzlyAdapter(staticAdapter, new String[] { "/" });
+
+        ServletAdapter exportAdapter = new ServletAdapter();
+        exportAdapter.setServletPath("/export");
+        exportAdapter.setServletInstance(new ExportServlet());
+        ws.addGrizzlyAdapter(exportAdapter, new String[] { "/export"});
+
         ws.start();
 
     }

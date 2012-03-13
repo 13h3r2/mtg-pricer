@@ -1,6 +1,7 @@
 package mtg
 
 import actions.{PriceUpdateCommand, PriceUpdater}
+import api.MtgRuPriceProcessor
 import com.osinka.subset._
 import com.mongodb.casbah.MongoConnection
 import java.util.Date
@@ -11,6 +12,7 @@ import ssg.SSGPriceProvider
 import actors.Actor
 import mtg.model.mapping._
 import com.mongodb.DBObject
+import io.Source
 
 object EditionAliasUpdated extends Actor with Connection {
   def act() {
@@ -34,6 +36,12 @@ object EditionAliasUpdated extends Actor with Connection {
 object Test2 extends App with Connection {
 
   BasicConfigurator.configure()
-  conn("edition").find().foreach(println(_));
+
+
+  val str = Source.fromFile("1.csv").mkString
+  val missed = new MtgRuPriceProcessor().process(str)
+  println(missed)
+  //new SSGPriceProvider(new Edition("X", "1021", Nil)).getPrice
+  //conn("edition").find().foreach(println(_));
 }
 

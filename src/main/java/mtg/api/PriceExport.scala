@@ -1,4 +1,4 @@
-package mtg.rest
+package mtg.api
 
 import java.io.InputStream
 import javax.ws.rs._

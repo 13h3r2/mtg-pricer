@@ -3,6 +3,9 @@ package mtg.persistence
 import mtg.model.Edition
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.DBObject
+import mtg.model.mapping.EditionMapping
+import mtg.model.mapping._
+import com.osinka.subset._
 
 object EditionDAO extends Connection {
 
@@ -27,5 +30,12 @@ object EditionDAO extends Connection {
         obj.get("aliasId").asInstanceOf[List[String]]
     )
     })
+  }
+  
+  def findNameByAlias(name : String) : String = {
+     collection
+       .findOne(EditionMapping.alias.any(name))
+       .map(_.get("name").asInstanceOf[String])
+       .getOrElse(null)
   }
 }
