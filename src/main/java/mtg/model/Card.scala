@@ -3,7 +3,7 @@ package mtg.model
 import java.util.Date
 
 
-case class CardItem(name: String, edition: String, condition: String)
+case class CardItem(name: String, edition: String, condition: String, foil: Boolean)
 
 case class PriceSnapshot(item: CardItem, price: Double, date: Date) {
   var diff: Double = 0;

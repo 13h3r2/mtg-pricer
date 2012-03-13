@@ -29,16 +29,17 @@ package object mapping {
     val name = "name".fieldOf[String]
     val edition = "edition".fieldOf[String]
     val condition = "condition".fieldOf[String]
+    val foil = "foil".fieldOf[Boolean]
   }
 
   implicit val ciWriter = ValueWriter[CardItem](ciWriterF _)
 
   implicit def ciWriterF(obj: CardItem): DBObject =
-    (CardItemMapping.name -> obj.name) ~ (CardItemMapping.edition -> obj.edition) ~ (CardItemMapping.condition -> obj.condition)
+    (CardItemMapping.name -> obj.name) ~ (CardItemMapping.edition -> obj.edition) ~ (CardItemMapping.condition -> obj.condition) ~ (CardItemMapping.foil -> obj.foil)
 
   implicit var ciReader = ValueReader[CardItem]({
-    case CardItemMapping.name(name) ~ CardItemMapping.edition(edition) ~ CardItemMapping.condition(condition)
-    => new CardItem(name, edition, condition)
+    case CardItemMapping.name(name) ~ CardItemMapping.edition(edition) ~ CardItemMapping.condition(condition) ~ CardItemMapping.foil(foil)
+    => new CardItem(name, edition, condition, foil)
   })
 
   object PriceSnapShotMapping extends Logging {

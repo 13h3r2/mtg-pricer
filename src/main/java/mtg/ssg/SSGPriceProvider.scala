@@ -68,6 +68,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       val tr = html \\ "tr"
       val cardLines = tr.slice(2, tr.length - 4)
 
+      //процессим ситуацию когда идет один заголовок и несколько кондишенов
       var cardName: String = null;
       var cardEdition: String = null;
       val cards = cardLines map {
@@ -81,7 +82,8 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
           }
           val condition = cells(cells.length - 4).text.trim
           val price = round(cells(cells.length - 2).text.trim.substring(1).toDouble * 100) / 100.0
-          new PriceSnapshot(new CardItem(cardName, cardEdition, condition), price, new Date())
+          val foil = cardName.contains("FOIL");
+          new PriceSnapshot(new CardItem(cardName, cardEdition, condition, foil), price, new Date())
       }
       val hasNext = tr(1).text.contains("Next")
       new SSGPageInfo(cards, hasNext)
