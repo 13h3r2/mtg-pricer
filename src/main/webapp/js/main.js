@@ -7,11 +7,10 @@ $(document).ready(function () {
 function Page() {
     this.dayChanges = new DayChanges(this);
     this.editions = new Editions(this);
+    this.upload = new UploadPanel(this);
     this.navigation = new Navigation(this);
-
-    this.upload = new UploadPanel();
 }
 
 function UploadPanel() {
-    this.file
+
 }
