@@ -9,6 +9,8 @@ import java.lang.String
 import mtg.model._
 import java.util.Date
 import scala.math._
+import org.apache.commons.lang.StringUtils
+import mtg.persistence.EditionDAO
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
   def getPrice: Set[PriceSnapshot] = {
@@ -71,18 +73,20 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       //процессим ситуацию когда идет один заголовок и несколько кондишенов
       var cardName: String = null;
       var cardEdition: String = null;
+      var foil = false;
       val cards = cardLines map {
         W =>
           val cells = (W \\ "td")
           val currentText = cells(0).text.trim
           val currentEdition = cells(1).text.trim
           if (currentText.length() > 1) {
-            cardName = currentText
-            cardEdition = currentEdition
+            foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)");
+            cardName = currentText.replace("(FOIL)", "").replace("(Foil)", "").trim
+            cardEdition = currentEdition.replace("(FOIL)", "").replace("(Foil)", "").trim
+            cardEdition = EditionDAO.findNameByAlias(cardEdition)
           }
           val condition = cells(cells.length - 4).text.trim
           val price = round(cells(cells.length - 2).text.trim.substring(1).toDouble * 100) / 100.0
-          val foil = cardName.contains("FOIL");
           new PriceSnapshot(new CardItem(cardName, cardEdition, condition, foil), price, new Date())
       }
       val hasNext = tr(1).text.contains("Next")

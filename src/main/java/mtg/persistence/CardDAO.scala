@@ -14,7 +14,7 @@ object CardDAO extends Connection {
 
   lazy val priceCollection = conn("price2")
 
-  def savePriceSnapshot(priceSnapshot: PriceSnapshot) = {
+  def savePriceSnapshot(priceSnapshot: PriceSnapshot) : Boolean = {
     import mtg.model.mapping._
 
     val list = priceCollection
@@ -29,14 +29,16 @@ object CardDAO extends Connection {
 
 
     if (dbo.isEmpty) {
-      priceSnapshot.diff = 0
-      priceCollection.save(priceSnapshot)
+      false
+//      priceSnapshot.diff = 0
+//      priceCollection.save(priceSnapshot)
     } else {
       priceSnapshot.diff = BigDecimal(priceSnapshot.price - dbo.get.get("price").asInstanceOf[Double])
         .setScale(2, RoundingMode.HALF_DOWN).toDouble
       if (priceSnapshot.diff.abs >= 0.01) {
         priceCollection.save(priceSnapshot)
       }
+      true
     }
   }
 }

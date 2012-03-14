@@ -1,21 +1,19 @@
 package mtg
 
+import actions.PriceUpdater
 import api.MtgRuPriceProcessor
 import model.mapping.PriceSnapShotMapping
-import persistence.Connection
 import org.apache.log4j.BasicConfigurator
 import io.Source
 import mtg.model.mapping._
+import persistence.{EditionDAO, Connection}
+import ssg.SSGPriceProvider
 
 
-object Test2 extends App with Connection {
+object Test3 extends App with Connection {
 
   BasicConfigurator.configure()
-
-  conn("price2")
-    .find(PriceSnapShotMapping.item.where(CardItemMapping.foil === true))
-    .limit(100)
-    .map(psReader.unpack(_))
-    .map(_.head)
-    .foreach(println(_))
+  EditionDAO.findAll(1).foreach(e => {
+    PriceUpdater.updatePrice(new SSGPriceProvider(e))
+  })
 }
