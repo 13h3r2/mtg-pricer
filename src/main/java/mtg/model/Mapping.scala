@@ -20,6 +20,7 @@ package object mapping {
   implicit val edWriter = ValueWriter[Edition](edWriterF _)
 
   def edWriterF(obj: Edition): DBObject = ((EditionMapping.name -> obj.name) ~ (EditionMapping.ssgId -> obj.ssgId) ~ (EditionMapping.alias -> obj.alias))
+
   implicit var edReader = ValueReader[Edition]({
     case (EditionMapping.name(p) ~ EditionMapping.ssgId(id) ~ EditionMapping.alias(a))
     => { new Edition(p, id, a) };
@@ -35,7 +36,7 @@ package object mapping {
   implicit val ciWriter = ValueWriter[CardItem](ciWriterF _)
 
   implicit def ciWriterF(obj: CardItem): DBObject =
-    (CardItemMapping.name -> obj.name) ~ (CardItemMapping.edition -> obj.edition) ~ (CardItemMapping.condition -> obj.condition) ~ (CardItemMapping.foil -> obj.foil)
+    (CardItemMapping.name -> obj.name)  ~ (CardItemMapping.edition -> obj.edition) ~ (CardItemMapping.condition -> obj.condition) ~ (CardItemMapping.foil -> obj.foil)
 
   implicit var ciReader = ValueReader[CardItem]({
     case CardItemMapping.name(name) ~ CardItemMapping.edition(edition) ~ CardItemMapping.condition(condition) ~ CardItemMapping.foil(foil)

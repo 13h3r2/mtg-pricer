@@ -1,17 +1,17 @@
-function PriceChange(name, diff, edition, condition, current) {
+function PriceChange(name, diff, edition, condition, foil, current) {
     this.name = name;
     this.edition = edition;
     this.condition = condition;
     this.diff = diff;
+    this.foil = foil
     this.current = current;
     this.fullName = function () {
-        return this.name + " - " + this.edition + " (" + this.condition + ")";
+        return this.name + " - " + this.edition + (this.foil ? " FOIL " : "") + " (" + this.condition + ")";
     };
     this.diffWithSign = function () {
         return this.diff > 0 ? "+" + diff : diff;
     };
 }
-
 
 
 function TableNavigationLink(name, offset) {
@@ -64,6 +64,7 @@ function PriceTable(page) {
                                 result[i]["diff"],
                                 item["edition"],
                                 item["condition"],
+                                item["foil"],
                                 result[i]["price"]));
                     }
                 }

@@ -17,15 +17,12 @@ object CardDAO extends Connection {
   def savePriceSnapshot(priceSnapshot: PriceSnapshot) : Boolean = {
     import mtg.model.mapping._
 
-    val list = priceCollection
+    val dbo: Option[DBObject] = priceCollection
       .find(PriceSnapShotMapping.item === priceSnapshot.item)
       .sort("date".fieldOf[Int](-1))
       .limit(1)
       .toIterable
-      .toList
-    val dbo: Option[DBObject] = list.collectFirst({
-      case x => x
-    })
+      .headOption
 
 
     if (dbo.isEmpty) {
