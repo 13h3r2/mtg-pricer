@@ -80,7 +80,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
           val currentText = cells(0).text.trim
           val currentEdition = cells(1).text.trim
           if (currentText.length() > 1) {
-            foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)");
+            foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)") || currentText.contains("(FOIL)") || currentText.contains("(Foil)");
             cardName = currentText.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = currentEdition.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = EditionDAO.findNameByAlias(cardEdition)

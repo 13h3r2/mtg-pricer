@@ -9,6 +9,7 @@ import mtg.model.mapping.PriceSnapShotMapping
 import org.apache.commons.lang.time.DateUtils
 import java.util.{Calendar, Date, List => JList}
 import java.text.SimpleDateFormat
+import mtg.actions.PriceUpdateCommand
 
 
 @Path("/price/lastChanges")
@@ -41,6 +42,14 @@ class ChangesResource extends Connection with Logging {
       .foldLeft(new JSONArray)((array, item) => array.put(item))
     new JSONObject().put("result", result)
   }
+
+  @GET
+  @Path("/update")
+  def searchCardSize() {
+    PriceUpdateCommand.doIt()
+    new JSONObject().put("result", "ok")
+  }
+
 
   @GET
   @Path("/size")
