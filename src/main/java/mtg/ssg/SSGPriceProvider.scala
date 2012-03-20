@@ -68,7 +68,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
     def parse(edition: Edition, is: InputStream): SSGPageInfo = {
       val html = HTMLParser.load(is)
       val tr = html \\ "tr"
-      val cardLines = tr.slice(2, tr.length - 4)
+      val cardLines = tr.slice(2, tr.length - 2)
 
       //процессим ситуацию когда идет один заголовок и несколько кондишенов
       var cardName: String = null;
