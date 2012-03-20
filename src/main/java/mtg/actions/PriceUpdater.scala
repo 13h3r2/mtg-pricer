@@ -1,19 +1,21 @@
 package mtg.actions
 
 import mtg.persistence.CardDAO
-import actors.Actor
 import actors.scheduler.ForkJoinScheduler
 import com.weiglewilczek.slf4s.Logging
-import mtg.model.{PriceSnapshot, CardItem}
+import mtg.model.PriceSnapshot
 import mtg.ssg.SSGPriceProvider
 import mtg.persistence.{PriceUpdateActionDAO, EditionDAO}
 import mtg.model.PriceUpdateAction
 import java.util.Date
+import actors.{IScheduler, Actor}
+import mtg.actions.PriceUpdater.PrintActorScheduler
 
 object PriceUpdateCommand {
   def doIt() = {
+    val sch = PrintActorScheduler.newScheduler()
     EditionDAO.findAll(10000).foreach(e => {
-      PriceUpdater.updatePrice(new SSGPriceProvider(e))
+      PriceUpdater.updatePrice(new SSGPriceProvider(e), sch)
     })
     PriceUpdateActionDAO.insert(new PriceUpdateAction(new Date()))
   }
@@ -26,15 +28,15 @@ trait PriceProvider {
 
 object PriceUpdater extends Logging {
 
-  def updatePrice(provider: PriceProvider) {
-    val actor = new UpdateActor()
+  def updatePrice(provider: PriceProvider, sch: IScheduler) {
+    val actor = new UpdateActor(sch)
     actor.start()
     actor ! provider
   }
 
-  class UpdateActor() extends Actor {
+  case class UpdateActor(sch: IScheduler) extends Actor {
 
-    override def scheduler = PrintActorScheduler.getSched
+    override def scheduler = sch
 
     def act() {
       react {
@@ -49,14 +51,12 @@ object PriceUpdater extends Logging {
     }
   }
 
-  object PrintActorScheduler {
-    lazy val sched = {
-      val s = new ForkJoinScheduler(10, 10, false, false)
+  object PrintActorScheduler  {
+     def newScheduler() : IScheduler = {
+      logger.debug("create scheduler")
+      val s = new ForkJoinScheduler(10, 10, true, false)
       s.start()
       s
     }
-
-    def getSched = sched
   }
-
 }

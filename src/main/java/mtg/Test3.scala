@@ -13,9 +13,9 @@ import ssg.SSGPriceProvider
 object Test3 extends App with Connection {
 
   BasicConfigurator.configure()
-    EditionDAO.findAll(1).foreach(e => {
-      PriceUpdater.updatePrice(new SSGPriceProvider(e))
-    })
+//    EditionDAO.findAll(1).foreach(e => {
+//      PriceUpdater.updatePrice(new SSGPriceProvider(e))
+//    })
 //
 //  val i = new CardItem("Fork", "3rd Edition/Revised", "SP", false)
 //  val filter = new BasicDBObject();
