@@ -2,29 +2,49 @@ package mtg.api
 
 import mtg.persistence.{CardDAO, EditionDAO}
 import mtg.model.CardItem
+import collection.mutable.MutableList
+import scala.math._
 
 
-class MtgRuPriceProcessor {
+object MtgRuPriceProcessor {
 
-  var missedEditions: Set[String] = Set()
-
-  def updatePrice(record: Record) {
-    val edition = EditionDAO.findNameByAlias(record.getEditionName())
-    if (edition == null) {
-      missedEditions += record.getEditionName()
-    }
-    val snapShot = CardDAO.findLastSnapshot(new CardItem(
-      record.getCardName(),
+  private def updatePrice(record: Record) {
+    val edition = EditionDAO.findNameByAlias(record.getEditionName)
+    val snapshot = CardDAO.findLastSnapshot(new CardItem(
+      record.getCardName,
       edition,
       "NM/M",
-      record.isFoil()
+      record.isFoil
     ))
 
-    if (snapShot.isEmpty)
-      println("missing" + record);
-    //else
-    //println("get! " + record);
+    if (snapshot.isEmpty) {
+      record.setPrice("PROBLEM")
+    }
+    else {
+      val price = round(snapshot.get.price * 30) - 1
+      record.setPrice(price.toString)
+    }
+  }
 
+  def process(input: String): List[String] = {
+    val lines = input.split("\n")
+    val header = lines.head
+    val records = lines
+      .drop(1)
+      .map(new Record(_))
+
+    records.foreach(updatePrice(_))
+    header :: records.map(_.toCSV).toList
+  }
+}
+
+
+class Record() {
+  private var items: MutableList[String] = new MutableList[String]()
+
+  def this(line: String) {
+    this()
+    this.items ++= parseString(line)
   }
 
   def parseString(toParse: String) = {
@@ -32,38 +52,38 @@ class MtgRuPriceProcessor {
     var current = ""
     var quotes = false
     toParse.foreach(walker => {
-      if(walker == ',' && !quotes) {
+      if (walker == ',' && !quotes) {
         result :+= current.trim()
         current = ""
         quotes = false
       }
-      else if(walker == '\"') {
+      else if (walker == '\"') {
         quotes = !quotes
       }
       else {
         current += walker
-      } 
-    });
+      }
+    })
+    result :+= current.trim()
     result
   }
 
-  def process(input: String): Set[String] = {
-    val records = input
-      .split("\n")
-      .drop(1)
-      .map(parseString(_))
-      .map(new Record(_))
+  def getEditionName: String = items(1)
 
-    records.foreach(updatePrice(_))
-    missedEditions
+  def getCardName: String = items(2).replace("/", "|")
+
+  def isFoil: Boolean = items(3).contains("foil")
+
+  def setPrice(price: String) = {
+    items(5) = price
   }
-}
 
-
-case class Record(items: List[String]) {
-  def getEditionName(): String = items(1)
-
-  def getCardName(): String = items(2).replace("/", "|")
-
-  def isFoil(): Boolean = items(3).contains("foil")
+  def toCSV() = {
+    items
+      .map(walker => {
+        var q = ""
+        if (walker.contains(",")) q = "\""
+        q + walker + q})
+      .mkString(",")
+  }
 }

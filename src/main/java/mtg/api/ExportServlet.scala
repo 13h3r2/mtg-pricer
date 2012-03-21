@@ -21,6 +21,12 @@ class ExportServlet extends HttpServlet {
         .filter(_.getFieldName() == "file")
         .head
         .get
+      val result = MtgRuPriceProcessor.process(new String(item)).mkString("\n")
+
+      resp.setContentType("text/plain; charset=\"utf-8\"")
+      resp.setHeader("Content-Disposition", "attachment1.txt; filename=\"1.txt\"")
+      resp.getWriter.write(result)
+      resp.getWriter.flush
     }
   }
 
