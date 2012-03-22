@@ -5,7 +5,7 @@ $(document).ready(function () {
 );
 
 function Page() {
-    this.dayChanges = new DayChanges(this);
+    this.dayChanges = new ChangesPanel(this);
     this.editions = new Editions(this);
     this.upload = new UploadPanel(this);
     this.updateInfo = new UpdateInfo(this);

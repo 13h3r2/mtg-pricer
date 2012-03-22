@@ -15,51 +15,44 @@ function PriceChange(name, date, diff, edition, condition, foil, current) {
 }
 
 
-function TableNavigationLink(name, offset) {
-    this.name = name;
-    this.offset = offset;
+function ChangesPanel(page) {
+    var self = this;
+    this.table = new AjaxTable(page);
+    this.date = ko.observable(new Date());
+    this.dayChangeProvider = new DayChangesDataProvider(this, this.table);
+    this.table.provider = this.dayChangeProvider;
+
+    this.dateText = ko.dependentObservable(function () {
+        return $.datepicker.formatDate('yy-mm-dd', this.date());
+    }, this);
+
+    this.next = function () {
+        var newDate = new Date(this.date().getTime() + 1000 * 60 * 60 * 24);
+        this.date(newDate);
+        this.table.load();
+    };
+    this.prev = function () {
+        var newDate = new Date(this.date().getTime() - 1000 * 60 * 60 * 24);
+        this.date(newDate);
+        this.table.load();
+    };
 }
 
-function PriceTable(page) {
+
+
+function DayChangesDataProvider(changesPanel, table) {
     var self = this;
-    this.currentOffset = ko.observable(0);
-    this.pages = ko.observableArray([new TableNavigationLink("1", 0)]);
-    this.changes = ko.observableArray([]);
-    this.itemsPerPage = 20;
-
-    this.selectPage = function (navigationLink) {
-        if (navigationLink.offset != self.currentOffset()) {
-            self.currentOffset(navigationLink.offset);
-            self.loadData();
-        }
-    }
-
-    this.reload = function () {
-        _ajaxCall("/api/price/changes/date/size?date=" + page.dayChanges.dateText(),
-            function (json) {
-                self.pages.removeAll();
-                var count = json["result"];
-                var currentPage = 0;
-                do {
-                    currentPage++;
-                    self.pages.push(new TableNavigationLink("" + currentPage, (currentPage - 1) * self.itemsPerPage));
-                } while (currentPage * self.itemsPerPage < count);
-                self.currentOffset(0);
-                self.loadData();
-            });
-    }
-
-    this.loadData = function () {
+    this.loadPage = function () {
         _ajaxCall("/api/price/changes/date?size=20" +
-            "&offset=" + self.currentOffset() +
-            "&date=" + page.dayChanges.dateText(),
+            "&offset=" + table.currentPage() +
+            "&date=" + changesPanel.dateText(),
             function (json) {
-                self.changes.removeAll();
+                table.items.removeAll();
                 var result = json["result"];
                 for (var i in result) {
                     if (result.hasOwnProperty(i)) {
                         var item = result[i]["item"];
-                        self.changes.push(
+                        table.items.push(
                             new PriceChange(
                                 item["name"],
                                 item["date"],
@@ -72,25 +65,21 @@ function PriceTable(page) {
                 }
             })
     };
+
+    this.load = function () {
+        _ajaxCall("/api/price/changes/date/size?date=" + changesPanel.dateText(),
+            function (json) {
+                table.pages.removeAll();
+                var count = json["result"];
+                var currentPage = 0;
+                do {
+                    currentPage++;
+                    table.pages.push(new TableNavigationLink("" + currentPage, (currentPage - 1) * table.ITEMS_PER_PAGE));
+                } while (currentPage * table.ITEMS_PER_PAGE < count);
+                table.currentPage(0);
+                self.loadPage();
+            });
+    }
+
+
 }
-
-function DayChanges(page) {
-    var self = this;
-    this.table = new PriceTable(page);
-    this.date = ko.observable(new Date());
-    this.dateText = ko.dependentObservable(function () {
-        return $.datepicker.formatDate('yy-mm-dd', this.date());
-    }, this);
-
-    this.next = function () {
-        var newDate = new Date(this.date().getTime() + 1000 * 60 * 60 * 24);
-        this.date(newDate);
-        this.table.reload();
-    };
-    this.prev = function () {
-        var newDate = new Date(this.date().getTime() - 1000 * 60 * 60 * 24);
-        this.date(newDate);
-        this.table.reload();
-    };
-}
-
