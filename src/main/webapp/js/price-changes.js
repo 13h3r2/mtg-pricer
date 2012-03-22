@@ -1,6 +1,7 @@
-function PriceChange(name, diff, edition, condition, foil, current) {
+function PriceChange(name, date, diff, edition, condition, foil, current) {
     this.name = name;
     this.edition = edition;
+    this.date = date;
     this.condition = condition;
     this.diff = diff;
     this.foil = foil
@@ -34,7 +35,7 @@ function PriceTable(page) {
     }
 
     this.reload = function () {
-        _ajaxCall("/api/price/lastChanges/size?date=" + page.dayChanges.dateText(),
+        _ajaxCall("/api/price/changes/date/size?date=" + page.dayChanges.dateText(),
             function (json) {
                 self.pages.removeAll();
                 var count = json["result"];
@@ -49,7 +50,7 @@ function PriceTable(page) {
     }
 
     this.loadData = function () {
-        _ajaxCall("/api/price/lastChanges?size=20" +
+        _ajaxCall("/api/price/changes/date?size=20" +
             "&offset=" + self.currentOffset() +
             "&date=" + page.dayChanges.dateText(),
             function (json) {
@@ -61,6 +62,7 @@ function PriceTable(page) {
                         self.changes.push(
                             new PriceChange(
                                 item["name"],
+                                item["date"],
                                 result[i]["diff"],
                                 item["edition"],
                                 item["condition"],

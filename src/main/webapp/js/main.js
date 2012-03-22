@@ -15,7 +15,7 @@ function Page() {
 
 function UpdateInfo() {
     this.update = function () {
-        _ajaxCall("/api/price/lastChanges/update",
+        _ajaxCall("/api/price/update",
             function (json) {
         });
     }

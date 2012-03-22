@@ -12,13 +12,14 @@ import java.text.SimpleDateFormat
 import mtg.actions.PriceUpdateCommand
 
 
-@Path("/price/lastChanges")
+@Path("/price/changes/date")
 class ChangesResource extends Connection with Logging {
 
   private def max_size(): Int = 50;
 
   @GET
-  def searchCard(
+  @Path("/")
+  def dateSearchCard(
     @DefaultValue("") @QueryParam("date") dateStart: String,
     @DefaultValue("0") @QueryParam("offset") offset: Int,
     @DefaultValue("20") @QueryParam("size") size: Int)
@@ -43,17 +44,11 @@ class ChangesResource extends Connection with Logging {
     new JSONObject().put("result", result)
   }
 
-  @GET
-  @Path("/update")
-  def searchCardSize() {
-    PriceUpdateCommand.doIt()
-    new JSONObject().put("result", "ok")
-  }
 
 
   @GET
   @Path("/size")
-  def searchCardSize(@DefaultValue("") @QueryParam("date") dateStart: String)
+  def dateSearchCardSize(@DefaultValue("") @QueryParam("date") dateStart: String)
   : JSONObject = {
     val today = new Date()
     var begin = DateUtils.truncate(today, Calendar.DATE)

@@ -1,10 +1,12 @@
-function Edition(name, aliases, editionsList) {
+function Edition(name, ssgId, aliases, editionsList) {
     var self = this;
+    this.ssgId = ssgId;
     this.editionsList = editionsList;
     this.isEditMode = ko.observable(false);
     this.name = name;
     this.aliases = ko.observable(aliases);
     this.aliasesEdit = ko.observable(aliases);
+
     this.switchEdit = function() {
         if(!this.isEditMode()) {
             this.editionsList.clearAllSelected();
@@ -31,7 +33,7 @@ function Editions(page) {
     var self = this;
     this.page = page;
     this.editions = ko.observableArray([
-        new Edition("Test", ["Test", "TST", "TESTTT"])
+        new Edition("Test", ["Test", "123", "TST", "TESTTT"])
     ]);
     this.reload = function() {
         _ajaxCall("/api/edition",
@@ -43,6 +45,7 @@ function Editions(page) {
                         self.editions.push(
                             new Edition(
                                 result[i]["name"],
+                                result[i]["ssgId"],
                                 result[i]["alias"].join(", "),
                                 self
                             ));
@@ -52,6 +55,6 @@ function Editions(page) {
     }
 
     this.clearAllSelected = function() {
-        this.editions().forEach(function(edition) { edition.isEditMode(false)});
+        this.editions().forEach(function(edition) { if(edition.isEditMode()) edition.isEditMode(false)});
     }
 }
