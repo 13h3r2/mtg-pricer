@@ -5,7 +5,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload
 import org.apache.commons.fileupload.disk.DiskFileItemFactory
 import scala.collection.JavaConversions._
 import java.io.File
+import java.util.Date
 import org.apache.commons.fileupload.FileItem
+import java.text.SimpleDateFormat
 
 
 class ExportServlet extends HttpServlet {
@@ -23,8 +25,10 @@ class ExportServlet extends HttpServlet {
         .get
       val result = MtgRuPriceProcessor.process(new String(item)).mkString("\n")
 
+      val attachName =  "mtgru" + new SimpleDateFormat("ddMMyyyy").format (new Date());
+
       resp.setContentType("text/plain; charset=\"utf-8\"")
-      resp.setHeader("Content-Disposition", "attachment1.txt; filename=\"1.txt\"")
+      resp.setHeader("Content-Disposition", "attachment1.txt; filename=\""+attachName+".txt\"")
       resp.getWriter.write(result)
       resp.getWriter.flush
     }
