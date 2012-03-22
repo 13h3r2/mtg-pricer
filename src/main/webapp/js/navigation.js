@@ -1,6 +1,6 @@
 function Navigation(page) {
     this.items = ko.observableArray([
-        new NavigationItem(this, "Last day changes", page.dayChanges.table.reload, page.dayChanges),
+        new NavigationItem(this, "Last day changes", page.dayChanges.table.load, page.dayChanges),
         new NavigationItem(this, "Editions", page.editions.reload, page.editions),
         new NavigationItem(this, "Export", null, page.upload)
     ]
@@ -18,7 +18,7 @@ function NavigationItem(navigation, name, activate, panel) {
     this.click = function () {
         //set active at navigation
         self.navigation.active(self.panel);
-        console.log(self.navigation.active());
+        //console.log(self.navigation.active());
         //read data
         if( self.activate != null )
             self.activate();

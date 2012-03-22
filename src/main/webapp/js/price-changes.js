@@ -49,10 +49,11 @@ function DayChangesDataProvider(changesPanel, table) {
             function (json) {
                 table.items.removeAll();
                 var result = json["result"];
+                var newItems = [];
                 for (var i in result) {
                     if (result.hasOwnProperty(i)) {
                         var item = result[i]["item"];
-                        table.items.push(
+                        newItems.push(
                             new PriceChange(
                                 item["name"],
                                 item["date"],
@@ -63,6 +64,7 @@ function DayChangesDataProvider(changesPanel, table) {
                                 result[i]["price"]));
                     }
                 }
+                table.items(newItems);
             })
     };
 
@@ -74,7 +76,7 @@ function DayChangesDataProvider(changesPanel, table) {
                 var currentPage = 0;
                 do {
                     currentPage++;
-                    table.pages.push(new TableNavigationLink("" + currentPage, (currentPage - 1) * table.ITEMS_PER_PAGE));
+                    table.pages.push(new AjaxTableLink("" + currentPage, (currentPage - 1) * table.ITEMS_PER_PAGE));
                 } while (currentPage * table.ITEMS_PER_PAGE < count);
                 table.currentPage(0);
                 self.loadPage();

@@ -40,9 +40,10 @@ function Editions(page) {
             function (json) {
                 self.editions.removeAll();
                 var result = json["result"];
+                var newItems = [];
                 for (var i in result) {
                     if (result.hasOwnProperty(i)) {
-                        self.editions.push(
+                        newItems.push(
                             new Edition(
                                 result[i]["name"],
                                 result[i]["ssgId"],
@@ -51,6 +52,7 @@ function Editions(page) {
                             ));
                     }
                 }
+                self.editions(newItems);
             })
     }
 

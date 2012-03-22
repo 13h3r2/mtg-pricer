@@ -1,6 +1,6 @@
 
 function _ajaxCall(url, callback, message, noEndCallback) {
-    console.log("get " + url);
+    //console.log("get " + url);
     var messageText = 'Loading...';
     if (message != null) {
         messageText = message + '...';
@@ -23,8 +23,8 @@ function _ajaxCallFail(error) {
 
 function _ajaxCallEnd(json) {
     $("#loadingLabel").hide();
-    console.log("got");
-    console.log(json);
+    //console.log("got");
+    //console.log(json);
 }
 
 

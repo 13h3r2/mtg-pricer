@@ -15,10 +15,10 @@ function AjaxTable(page) {
     };
 
     this.load = function() {
-        this.provider.load();
+        self.provider.load();
     }
     this.loadPage = function() {
-        this.provider.loadPage();
+        self.provider.loadPage();
     }
 
 }

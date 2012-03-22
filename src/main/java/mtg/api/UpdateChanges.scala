@@ -8,7 +8,6 @@ import org.codehaus.jettison.json.JSONObject
 class UpdateChanges {
 
   @GET
-  @Path("/update")
   def update() {
     PriceUpdateCommand.doIt()
     new JSONObject().put("result", "ok")
