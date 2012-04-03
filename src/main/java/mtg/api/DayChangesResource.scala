@@ -13,7 +13,7 @@ import mtg.actions.PriceUpdateCommand
 
 
 @Path("/price/changes/date")
-class ChangesResource extends Connection with Logging {
+class DayChangesResource extends Connection with Logging {
 
   private def max_size(): Int = 50;
 

@@ -5,10 +5,11 @@ $(document).ready(function () {
 );
 
 function Page() {
-    this.dayChanges = new ChangesPanel(this);
+    this.сhanges = new ChangesPanel(this);
     this.editions = new Editions(this);
     this.upload = new UploadPanel(this);
     this.updateInfo = new UpdateInfo(this);
+
     this.navigation = new Navigation(this);
 }
 

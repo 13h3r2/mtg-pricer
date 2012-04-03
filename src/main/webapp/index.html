@@ -6,8 +6,8 @@
     <script type='text/javascript' src='js/lib/jquery.tmpl.js'></script>
     <script type='text/javascript' src='js/lib/jquery-ui-1.8.17.custom.min.js'></script>
     <script type='text/javascript' src='js/lib/knockout-2.0.0.debug.js'></script>
-    <script type='text/javascript' src='js/editions.js'></script>
     <script type='text/javascript' src='js/main.js'></script>
+    <script type='text/javascript' src='js/editions.js'></script>
     <script type='text/javascript' src='js/navigation.js'></script>
     <script type='text/javascript' src='js/price-changes.js'></script>
     <script type='text/javascript' src='js/ajax-table.js'></script>
@@ -41,9 +41,9 @@
             </ul>
         </div>
 
-        <div data-bind="visible: navigation.active() == dayChanges">
+        <div data-bind="visible: navigation.active() == сhanges">
 
-            <div class="row" data-bind="with: dayChanges">
+            <div class="row" data-bind="with: сhanges">
                 <div class="span12">
                     <div class="pagination pagination-centered">
                         <ul>
@@ -56,7 +56,7 @@
             </div>
 
             <!--day changes-->
-            <div class="row" data-bind="with: dayChanges.table">
+            <div class="row" data-bind="with: сhanges.table">
                 <div class="span12">
                     <div class="pagination pagination-centered">
                         <ul>
