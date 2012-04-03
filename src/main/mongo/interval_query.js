@@ -1,37 +1,32 @@
-r = function () {
-    if (this.price.length > 0) {
-        var lastPrice = this.price[this.price.length - 1];
-        if (lastPrice.diff != 0) {
-            var absDiff = lastPrice.diff;
-            if (lastPrice.diff < 0) {
-                absDiff = -lastPrice.diff
-            }
-            emit(this.item.name, {
-                "info":[
-                    { "item":this.item, "price":lastPrice }
-                ],
-                "maxChange":lastPrice.diff,
-                "maxAbsChange":absDiff
-            });
-        }
+m = function () {
+    if(this.diff != 0) {
+        this.changesCount = 1;
+        emit({
+                "item" : this.item,
+                "month" : new Date(this.date.getFullYear(), this.date.getMonth(), 1)
+            },
+            this);
     }
 };
-m = function (key, values) {
-    var result = {
-        "info":[],
-        "maxChange":0,
-        "maxAbsChange":0 };
-    values.forEach(function (value) {
-        if (result.maxAbsChange < value.maxAbsChange) {
-            result.maxChange = value.maxChange;
-            result.maxAbsChange = value.maxAbsChange;
+r = function (key, values) {
+    var result = new Object();
+    result.item = values[0].item;
+    result.price = values[0].price;
+    result.date = values[0].date;
+    result.diff = 0;
+    result.absDiff = 0;
+    result.changesCount = 0;
+    values.forEach(function(walker) {
+        result.diff += walker.diff;
+        result.absDiff += walker.absDiff;
+        result.changesCount++;
+        if(result.date < walker.date) {
+            result.date = walker.date;
+            result.price = walker.price;
         }
-        value.info.forEach(function (x) {
-            result.info.push(x)
-        });
     });
     return result;
 };
-db.price.mapReduce(r, m, {out:{replace:"mrPriceLastChange"}});
+db.price2.mapReduce(m, r, {out:{replace:"priceMonth"}});
+db.priceMonth.find().sort({"value.changesCount" : -1});
 
-db.mrPriceLastChange.find({},{"value.info":0}).sort({"value.maxAbsChange":-1})
