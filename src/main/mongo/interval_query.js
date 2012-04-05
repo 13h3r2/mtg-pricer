@@ -1,9 +1,9 @@
 m = function () {
-    if(this.diff != 0) {
+    if (this.diff != 0) {
         this.changesCount = 1;
         emit({
-                "item" : this.item,
-                "month" : new Date(this.date.getFullYear(), this.date.getMonth(), 1)
+                "item":this.item,
+                "month":new Date(this.date.getFullYear(), this.date.getMonth(), 1)
             },
             this);
     }
@@ -16,11 +16,11 @@ r = function (key, values) {
     result.diff = 0;
     result.absDiff = 0;
     result.changesCount = 0;
-    values.forEach(function(walker) {
+    values.forEach(function (walker) {
         result.diff += walker.diff;
         result.absDiff += walker.absDiff;
         result.changesCount++;
-        if(result.date < walker.date) {
+        if (result.date < walker.date) {
             result.date = walker.date;
             result.price = walker.price;
         }
@@ -28,5 +28,5 @@ r = function (key, values) {
     return result;
 };
 db.price2.mapReduce(m, r, {out:{replace:"priceMonth"}});
-db.priceMonth.find().sort({"value.changesCount" : -1});
+db.priceMonth.find().sort({"value.changesCount":-1});
 
