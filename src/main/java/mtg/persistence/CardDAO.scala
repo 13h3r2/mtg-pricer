@@ -3,10 +3,7 @@ package mtg.persistence
 import mtg.model.mapping._
 import com.mongodb.DBObject
 import com.osinka.subset._
-import scala.math
 import math.BigDecimal.RoundingMode
-import org.apache.commons.lang.time.DateUtils
-import java.util.{Calendar, Date}
 import mtg.model.mapping.PriceSnapShotMapping
 import mtg.model.{PriceSnapshot, CardItem}
 
@@ -15,7 +12,7 @@ object CardDAO extends Connection {
 
   lazy val priceCollection = conn("price2")
 
-  def findLastSnapshot(item : CardItem) = {
+  def findLastSnapshot(item: CardItem) = {
     priceCollection
       .find(PriceSnapShotMapping.item === item)
       .sort("date".fieldOf[Int](-1))
@@ -25,7 +22,7 @@ object CardDAO extends Connection {
       .map(psReader.unpack(_).get)
   }
 
-  def savePriceSnapshot(priceSnapshot: PriceSnapshot) : Boolean = {
+  def savePriceSnapshot(priceSnapshot: PriceSnapshot): Boolean = {
     import mtg.model.mapping._
 
     val dbo: Option[DBObject] = priceCollection

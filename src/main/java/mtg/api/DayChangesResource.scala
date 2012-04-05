@@ -9,7 +9,6 @@ import mtg.model.mapping.PriceSnapShotMapping
 import org.apache.commons.lang.time.DateUtils
 import java.util.{Calendar, Date, List => JList}
 import java.text.SimpleDateFormat
-import mtg.actions.PriceUpdateCommand
 
 
 @Path("/price/changes/date")

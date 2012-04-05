@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils
 import mtg.persistence.EditionDAO
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
-  def getPrice: Set[PriceSnapshot] = {
+  def prices: Set[PriceSnapshot] = {
     var result: Set[PriceSnapshot] = Set.empty
     for (p <- new SSGPageSearch(edition)) {
       result ++= p.getCards.toSet

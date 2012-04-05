@@ -1,6 +1,6 @@
 package mtg
 
-import actions.{PriceUpdateCommand, PriceUpdater}
+import actions.{PriceUpdater}
 import model.PriceUpdateAction
 import persistence.{PriceUpdateActionDAO, EditionDAO}
 import ssg.SSGPriceProvider
@@ -16,6 +16,7 @@ import java.util.Date
 //1041 1043 1045 1047 1049 1051 1001
 object Test extends App {
   BasicConfigurator.configure
-  PriceUpdateCommand.doIt()
+  PriceUpdater update
+
 }
 

@@ -2,52 +2,66 @@ package mtg.actions
 
 import mtg.persistence.CardDAO
 import actors.scheduler.ForkJoinScheduler
-import com.weiglewilczek.slf4s.Logging
 import mtg.ssg.SSGPriceProvider
 import mtg.persistence.{PriceUpdateActionDAO, EditionDAO}
 import java.util.Date
 import actors.{IScheduler, Actor}
-import mtg.actions.PriceUpdater.PrintActorScheduler
 import mtg.model.{Edition, PriceSnapshot, PriceUpdateAction}
-
-object PriceUpdateCommand {
-  def doIt() = {
-    PriceUpdater.update(EditionDAO.findAll(10000))
-    PriceUpdateActionDAO.insert(new PriceUpdateAction(new Date()))
-  }
-}
-
+import mtg.actions.PriceUpdater.{UpdateActor, PrintActorScheduler}
+import com.weiglewilczek.slf4s.{Logger, Logging}
 
 trait PriceProvider {
-  def getPrice: Set[PriceSnapshot]
+  def prices: Set[PriceSnapshot]
 }
 
 object PriceUpdater extends Logging {
 
-  def update(provider: Iterator[Edition]) {
-    val sch = PrintActorScheduler.newScheduler()
-    provider.foreach(a => PriceUpdater.updatePrice(new SSGPriceProvider(a), sch))
+  def update {
+    val updateActor = new UpdateActor
+    updateActor.start
+    updateActor ! EditionDAO.findAll(100000).toSet
   }
 
-  def updatePrice(provider: PriceProvider, sch: IScheduler) {
-    val actor = new UpdateActor(sch)
-    actor.start()
-    actor ! provider
+  class UpdateActor extends Actor with Logging {
+    var editionsInProcess: Set[Edition] = Set.empty[Edition]
+
+    def act {
+      loop { react {
+        case editions: Set[Edition] =>
+          //todo this should not be a message to actor
+          val sch = PrintActorScheduler.newScheduler()
+          editionsInProcess ++= editions
+          editions.foreach(ed => {
+            val actor = new EditionUpdateActor(sch, this)
+            actor.start
+            actor ! ed
+          })
+
+        case finished: Edition =>
+          editionsInProcess -= finished
+          logger.debug("end " + finished + ". " + editionsInProcess.size + " to go")
+          if (editionsInProcess.isEmpty) {
+            logger.info("update complete")
+            exit
+          }
+      }
+    }}
   }
 
-  class UpdateActor(sch: IScheduler) extends Actor {
-
+  class EditionUpdateActor(sch: IScheduler, updater: Actor) extends Actor with Logging {
     override def scheduler = sch
 
-    def act() {
+    def act {
       react {
-        case provider: PriceProvider =>
-          logger.debug("start " + provider)
-          provider
-            .getPrice
-            .filter(obj => !CardDAO.savePriceSnapshot(obj))
-            .foreach(a => logger.debug("unable to save " + a))
-          logger.debug("end " + provider)
+        case ed: Edition =>
+          logger.debug("start " + ed)
+          try {
+            new SSGPriceProvider(ed)
+              .prices
+              .filter(obj => !CardDAO.savePriceSnapshot(obj))
+              .foreach(a => logger.debug("unable to save " + a))
+          }
+          finally {updater ! ed}
       }
     }
   }
