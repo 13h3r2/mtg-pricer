@@ -2,7 +2,7 @@ package mtg.api
 
 import javax.ws.rs.{Path, GET}
 import org.codehaus.jettison.json.JSONObject
-import mtg.persistence.{PriceUpdateActionDAO, EditionDAO}
+import mtg.persistence.PriceUpdateActionDAO
 import mtg.model.PriceUpdateAction
 import java.util.Date
 import mtg.actions.PriceUpdater

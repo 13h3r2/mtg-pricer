@@ -3,12 +3,10 @@ package mtg.actions
 import mtg.persistence.CardDAO
 import actors.scheduler.ForkJoinScheduler
 import mtg.ssg.SSGPriceProvider
-import mtg.persistence.{PriceUpdateActionDAO, EditionDAO}
-import java.util.Date
+import mtg.persistence.EditionDAO
 import actors.{IScheduler, Actor}
-import mtg.model.{Edition, PriceSnapshot, PriceUpdateAction}
-import mtg.actions.PriceUpdater.{UpdateActor, PrintActorScheduler}
-import com.weiglewilczek.slf4s.{Logger, Logging}
+import mtg.model.{Edition, PriceSnapshot}
+import com.weiglewilczek.slf4s.Logging
 
 trait PriceProvider {
   def prices: Set[PriceSnapshot]

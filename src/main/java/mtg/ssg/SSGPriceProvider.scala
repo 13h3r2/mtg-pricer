@@ -9,8 +9,9 @@ import java.lang.String
 import mtg.model._
 import java.util.Date
 import scala.math._
-import org.apache.commons.lang.StringUtils
 import mtg.persistence.EditionDAO
+import nu.validator.htmlparser.sax.HtmlParser
+import nu.validator.htmlparser.common.XmlViolationPolicy
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
   def prices: Set[PriceSnapshot] = {
@@ -98,9 +99,6 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       override def loadXML(source: InputSource, _p: SAXParser) = loadXML(source)
 
       def loadXML(source: InputSource) = {
-        import nu.validator.htmlparser.{sax, common}
-        import sax.HtmlParser
-        import common.XmlViolationPolicy
         val reader = new HtmlParser
         reader.setXmlPolicy(XmlViolationPolicy.ALLOW)
         reader.setContentHandler(this)

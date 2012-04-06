@@ -4,13 +4,9 @@ import mtg.persistence.Connection
 import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
 import com.osinka.subset.stringToField
-import mtg.model.mapping.PriceSnapShotMapping
-import org.apache.commons.lang.time.DateUtils
-import java.util.{Calendar, Date, List => JList}
-import java.text.SimpleDateFormat
+import java.util.{List => JList}
 import javax.ws.rs._
 import mtg.model.mapping._;
-import javax.xml.ws.RequestWrapper
 
 
 @Path("/edition")

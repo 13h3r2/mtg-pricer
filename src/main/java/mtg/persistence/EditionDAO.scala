@@ -3,9 +3,7 @@ package mtg.persistence
 import mtg.model.Edition
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.DBObject
-import mtg.model.mapping.EditionMapping
 import mtg.model.mapping._
-import com.osinka.subset._
 
 object EditionDAO extends Connection {
 

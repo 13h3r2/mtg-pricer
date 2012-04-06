@@ -5,8 +5,6 @@ import com.osinka.subset._
 import com.mongodb.DBObject
 import com.weiglewilczek.slf4s.Logging
 import java.util.Date
-import scala.Option._
-import scala.Option
 
 
 package object mapping {
