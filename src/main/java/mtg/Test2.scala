@@ -1,5 +1,6 @@
 package mtg
 
+import actions.RebuildMonthPriceChanges
 import api.MtgRuPriceProcessor
 import org.apache.log4j.BasicConfigurator
 import io.Source
@@ -10,6 +11,6 @@ import persistence.{DatabaseUtil, Connection}
 
 object Test2 extends App with Connection {
 
-  DatabaseUtil.copyDB("mtg", "mtg-backup")
+  RebuildMonthPriceChanges.doIt()
 }
 
