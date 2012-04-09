@@ -28,6 +28,6 @@ class Edition {
     this.ssgId = ssgId
   }
 
-  override def toString = List (name, ssgId, alias).foldLeft ("") ((a, b) => (a + "," + b) )
+  override def toString = List (name, ssgId, alias).mkString(",")
 }
 

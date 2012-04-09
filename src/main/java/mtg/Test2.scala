@@ -2,19 +2,14 @@ package mtg
 
 import api.MtgRuPriceProcessor
 import org.apache.log4j.BasicConfigurator
-import persistence.Connection
 import io.Source
+import com.mongodb.casbah.MongoConnection._
+import com.mongodb.casbah.MongoConnection
+import com.mongodb.casbah.commons.MongoDBObjectBuilder
+import persistence.{DatabaseUtil, Connection}
 
 object Test2 extends App with Connection {
 
-  BasicConfigurator.configure()
-
-
-  val str = Source.fromFile("1.csv").mkString
-  val p = new java.io.PrintWriter("3.csv")
-  MtgRuPriceProcessor.process(str).foreach(p.println)
-  p.close()
-//  new SSGPriceProvider(new Edition("X", "5042", Nil)).getPrice
-  //conn("edition").find().foreach(println(_));
+  DatabaseUtil.copyDB("mtg", "mtg-backup")
 }
 

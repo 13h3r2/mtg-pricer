@@ -29,7 +29,7 @@ object RebuildMonthPriceChanges extends Connection {
     }
     """
 
-
+    conn
     //conn.mapReduce(mr)
   }
 }

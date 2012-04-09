@@ -1,12 +1,11 @@
 package mtg.actions
 
-import mtg.persistence.CardDAO
 import actors.scheduler.ForkJoinScheduler
 import mtg.ssg.SSGPriceProvider
-import mtg.persistence.EditionDAO
 import actors.{IScheduler, Actor}
 import mtg.model.{Edition, PriceSnapshot}
 import com.weiglewilczek.slf4s.Logging
+import mtg.persistence.{DatabaseUtil, CardDAO, Connection, EditionDAO}
 
 trait PriceProvider {
   def prices: Set[PriceSnapshot]
@@ -21,30 +20,47 @@ object PriceUpdater extends Logging {
   }
 
   class UpdateActor extends Actor with Logging {
-    var editionsInProcess: Set[Edition] = Set.empty[Edition]
+    var inProcess: Set[Edition] = Set.empty[Edition]
 
     def act {
-      loop { react {
-        case editions: Set[Edition] =>
-          //todo this should not be a message to actor
-          val sch = PrintActorScheduler.newScheduler()
-          editionsInProcess ++= editions
-          editions.foreach(ed => {
-            val actor = new EditionUpdateActor(sch, this)
-            actor.start
-            actor ! ed
-          })
+      loop {
+        react {
+          case editions: Set[Edition] =>
+            //todo this should not be a message to actor
+            val sch = PrintActorScheduler.newScheduler()
+            inProcess ++= editions
+            editions.foreach(ed => {
+              val actor = new EditionUpdateActor(sch, this)
+              actor.start
+              actor ! ed
+            })
 
-        case finished: Edition =>
-          editionsInProcess -= finished
-          logger.debug("end " + finished + ". " + editionsInProcess.size + " to go")
-          if (editionsInProcess.isEmpty) {
-            logger.info("update complete")
-            exit
-          }
+          case finished: Edition =>
+            inProcess -= finished
+            logger.debug("Edition %s finished. %d to go".format(finished, inProcess.size))
+            if (inProcess.isEmpty) {
+              logger.info("update complete")
+              val postActions = new PostUpdateActions
+              postActions.start
+              postActions ! "go"
+              exit
+            }
+        }
       }
-    }}
+    }
   }
+
+  class PostUpdateActions extends Actor with Connection with Logging {
+    def act() {
+      react {
+        case _ =>
+          RebuildMonthPriceChanges.doIt();
+          DatabaseUtil.copyDB("mtg", "mtg-backup")
+          logger.info("callbacks complete")
+      }
+    }
+  }
+
 
   class EditionUpdateActor(sch: IScheduler, updater: Actor) extends Actor with Logging {
     override def scheduler = sch
@@ -59,7 +75,9 @@ object PriceUpdater extends Logging {
               .filter(obj => !CardDAO.savePriceSnapshot(obj))
               .foreach(a => logger.debug("unable to save " + a))
           }
-          finally {updater ! ed}
+          finally {
+            updater ! ed
+          }
       }
     }
   }
