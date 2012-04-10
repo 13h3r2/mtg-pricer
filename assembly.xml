@@ -1,0 +1,24 @@
+<assembly>
+    <id>algorithms</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <baseDirectory>.</baseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>src/main/webapp/**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/target</directory>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>mtg-pricer*jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+</assembly>

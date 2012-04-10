@@ -1,23 +1,23 @@
 package mtg.api
 
 import mtg.persistence.Connection
-import javax.ws.rs.{DefaultValue, QueryParam, GET, Path}
 import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
 import com.osinka.subset._
 import mtg.model.mapping.PriceSnapShotMapping
 import org.apache.commons.lang.time.DateUtils
-import java.util.{Calendar, Date, List => JList}
+import java.util.{Calendar, Date}
 import java.text.SimpleDateFormat
+import javax.ws.rs.{QueryParam, DefaultValue, Produces, GET, Path => WSPath}
 
 
-@Path("/price/changes/interval")
+@WSPath("/price/changes/interval")
 class IntervalChangesResource extends Connection with Logging {
 
   private def max_size = 50;
 
   @GET
-  @Path("/")
+  @Produces
   def dateSearchCard(
                       @DefaultValue("") @QueryParam("dateStart") dateStart: String,
                       @DefaultValue("") @QueryParam("dateEnd") dateEnd: String,
@@ -46,7 +46,8 @@ class IntervalChangesResource extends Connection with Logging {
 
 
   @GET
-  @Path("/size")
+  @WSPath("/size")
+  @Produces
   def dateSearchCardSize(@DefaultValue("") @QueryParam("date") dateStart: String)
   : JSONObject = {
     val today = new Date()

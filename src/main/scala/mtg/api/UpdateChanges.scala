@@ -11,7 +11,7 @@ import mtg.actions.PriceUpdater
 class UpdateChanges {
 
   @GET
-  def update() {
+  def update() = {
     PriceUpdater.update
     PriceUpdateActionDAO.insert(new PriceUpdateAction(new Date()))
     new JSONObject().put("result", "ok")

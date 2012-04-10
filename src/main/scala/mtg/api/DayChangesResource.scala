@@ -1,27 +1,27 @@
 package mtg.api
 
 import mtg.persistence.Connection
-import javax.ws.rs.{DefaultValue, QueryParam, GET, Path}
 import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
 import com.osinka.subset._
 import mtg.model.mapping.PriceSnapShotMapping
 import org.apache.commons.lang.time.DateUtils
-import java.util.{Calendar, Date, List => JList}
+import java.util.{Calendar, Date}
 import java.text.SimpleDateFormat
+import javax.ws.rs.{Produces, DefaultValue, QueryParam, GET, Path => WSPath}
 
 
-@Path("/price/changes/date")
+@WSPath("/price/changes/date")
 class DayChangesResource extends Connection with Logging {
 
   private def max_size(): Int = 50;
 
   @GET
-  @Path("/")
+  @Produces
   def dateSearchCard(
-    @DefaultValue("") @QueryParam("date") dateStart: String,
-    @DefaultValue("0") @QueryParam("offset") offset: Int,
-    @DefaultValue("20") @QueryParam("size") size: Int)
+                      @DefaultValue("") @QueryParam("date") dateStart: String,
+                      @DefaultValue("0") @QueryParam("offset") offset: Int,
+                      @DefaultValue("20") @QueryParam("size") size: Int)
   : JSONObject = {
     val maxSize = if (size > max_size()) max_size() else size;
 
@@ -44,9 +44,9 @@ class DayChangesResource extends Connection with Logging {
   }
 
 
-
   @GET
-  @Path("/size")
+  @WSPath("/size")
+  @Produces
   def dateSearchCardSize(@DefaultValue("") @QueryParam("date") dateStart: String)
   : JSONObject = {
     val today = new Date()
