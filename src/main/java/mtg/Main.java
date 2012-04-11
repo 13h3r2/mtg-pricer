@@ -5,7 +5,7 @@ import mtg.scheduler.UpdatePriceJob;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.BasicConfigurator;
@@ -67,7 +67,9 @@ public class Main {
     }
 
     private static void initScheduler() throws SchedulerException {
-        Date startDate = DateUtils.addDays(DateUtils.truncate(new Date(), Calendar.DATE), 1);
+        Calendar startDate = new GregorianCalendar();
+        startDate = DateUtils.truncate(startDate, Calendar.DATE);
+        System.out.println(startDate.getTime());
 
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         JobDetail job = JobBuilder
@@ -80,10 +82,11 @@ public class Main {
 
         CalendarIntervalTrigger trigger = TriggerBuilder
                 .newTrigger()
-                .startAt(startDate)
+                .startAt(startDate.getTime())
                 .withSchedule(schedule)
                 .build();
 
         scheduler.scheduleJob(job, trigger);
+        scheduler.start();
     }
 }

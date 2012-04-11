@@ -5,6 +5,7 @@ import mtg.actions.PriceUpdater
 
 class UpdatePriceJob extends Job {
   def execute(context: JobExecutionContext) {
+    println("Update job started")
     PriceUpdater.update
   }
 }
