@@ -1,8 +1,10 @@
 package mtg.ssg
 
 
-class SSGDecryptor(secret: String) {
-  def decrypt(s: String): String = map(s)
+case class SSGDecryptor(secret: String) {
+  def decrypt(s: String): String = {
+    map(s)
+  }
   def validCode(s: String) = map.contains(s)
 
   lazy val map = SSGDecryptor.buildDecryptMap(secret)
@@ -20,7 +22,7 @@ object SSGDecryptor {
     result
   }
 
-  val pattern = "(\\.[a-zA-Z0-9]+).*\\{background-position:([^\\ ]+).*".r
+  val pattern = "(\\.[a-zA-Z0-9]+)[^\\{]*\\{background-position:([^\\ ]+).*".r
 
   val map = Map(
     "0px" -> "1",

@@ -1,6 +1,5 @@
 package mtg.ssg
 
-import java.io.InputStream
 import java.net.URL
 import xml._
 import xml.parsing.NoBindingFactoryAdapter

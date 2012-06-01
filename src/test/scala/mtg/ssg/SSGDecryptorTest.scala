@@ -32,6 +32,8 @@ class SSGDecryptorTest extends FunSuite {
       """.stripMargin
     val decryptor = new SSGDecryptor(secret)
     assert(decryptor.decrypt(".njjnGl") == "2")
+    assert(decryptor.validCode(".gnryEH") == false)
+    assert(decryptor.validCode(".otaGve") == false)
 
   }
 }
