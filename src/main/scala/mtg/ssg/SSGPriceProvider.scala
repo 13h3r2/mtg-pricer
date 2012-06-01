@@ -29,65 +29,54 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
 
   protected case class SSGPageInfo(cards: Seq[PriceSnapshot], hasNext: Boolean)
 
-  protected case class SSGPage(edition: Edition, offset: Int = 0) {
+  protected case class SSGHTMLPage(edition: Edition, offset: Int = 0) {
+
     private lazy val pageInfo: SSGPageInfo = {
-      val url = new URL("http://sales.starcitygames.com/spoiler/display.php?" +
-        "s%5Bcor2%5D=" + edition.ssgId +
-        "&%s&display=4" +
-        "&startnum=" + offset +
-        "&numpage=200&for=no&foil=all")
-      try {
-        SSGPageParser.parse(edition, url.openConnection().getInputStream)
-      }
-      catch {
-          case e => throw new RuntimeException(url.toString, e)
-      }
+      parse
     }
 
+    lazy val decryptor = new SSGDecryptor((html \\ "style").text.trim)
     def getCards = pageInfo.cards
-
     def isHasNext = pageInfo.hasNext
-  }
 
-  protected class SSGPageSearch(edition: Edition) extends Iterator[SSGPage] {
-    var currentOffset: Int = 0
-    var currentPage: SSGPage = null
+    private lazy val html = HTMLParser.load(
+      new URL("http://sales.starcitygames.com/spoiler/display.php?" +
+            "s%5Bcor2%5D=" + edition.ssgId +
+            "&%s&display=3" +
+            "&startnum=" + offset +
+            "&numpage=200&for=no&foil=all")
+        .openConnection.getInputStream)
 
-    def hasNext = {
-      (currentPage == null || currentPage.isHasNext)
-    }
-
-    def next() = {
-      if (currentPage != null)
-        currentOffset += 200;
-      currentPage = SSGPage(edition, currentOffset)
-      currentPage
-    }
-  }
-
-  protected object SSGPageParser {
-    def parse(edition: Edition, is: InputStream): SSGPageInfo = {
-      val html = HTMLParser.load(is)
-      val tr = html \\ "tr"
-      val cardLines = tr.slice(2, tr.length - 2)
+    def parse(): SSGPageInfo = {
+      val tr = (((html \\ "table")(1) \\ "table")(2) \\ "table")(1) \\ "tr"
+      val cardLines = tr.slice(4, tr.length - 2)
 
       //процессим ситуацию когда идет один заголовок и несколько кондишенов
-      var cardName: String = null;
-      var cardEdition: String = null;
-      var foil = false;
+      var cardName: String = null
+      var cardEdition: String = null
+      var foil = false
       val cards = cardLines map {
         W =>
           val cells = (W \\ "td")
           val currentText = cells(0).text.trim
           val currentEdition = cells(1).text.trim
           if (currentText.length() > 1) {
-            foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)") || currentText.contains("(FOIL)") || currentText.contains("(Foil)");
+            foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)") || currentText.contains("(FOIL)") || currentText.contains("(Foil)")
             cardName = currentText.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = currentEdition.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = EditionDAO.findNameByAlias(cardEdition)
           }
           val condition = cells(cells.length - 4).text.trim
-          val price = round(cells(cells.length - 2).text.trim.substring(1).toDouble * 100) / 100.0
+
+          val priceDivs: NodeSeq = cells(cells.length - 2) \ "div" \ "div" drop(1)
+          val priceString = priceDivs.map (div =>
+            div.attribute("class").get.head.text
+              .split(' ')
+              .filter(klass => decryptor.validCode("." + klass))
+              .map(klass => decryptor.decrypt("." + klass))
+              .head
+          ).foldLeft[String]("")(_+_)
+          val price = round(priceString.toDouble * 100) / 100.0
           new PriceSnapshot(new CardItem(cardName, cardEdition, condition, foil), price, new Date())
       }
       val hasNext = tr(1).text.contains("Next")
@@ -107,6 +96,22 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       }
     }
 
+  }
+
+  protected class SSGPageSearch(edition: Edition) extends Iterator[SSGHTMLPage] {
+    var currentOffset: Int = 0
+    var currentPage: SSGHTMLPage = null
+
+    def hasNext = {
+      currentPage == null || currentPage.isHasNext
+    }
+
+    def next() = {
+      if (currentPage != null)
+        currentOffset += 200
+      currentPage = SSGHTMLPage(edition, currentOffset)
+      currentPage
+    }
   }
 
 }
