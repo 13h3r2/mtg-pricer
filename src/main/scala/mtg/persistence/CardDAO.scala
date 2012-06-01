@@ -35,7 +35,7 @@ object CardDAO extends Connection {
 
     if (dbo.isEmpty) {
       priceSnapshot.diff = 0
-      priceCollection.save(priceSnapshot)
+      //priceCollection.save(priceSnapshot)
       false
     } else {
       priceSnapshot.diff = BigDecimal(priceSnapshot.price - dbo.get.get("price").asInstanceOf[Double])

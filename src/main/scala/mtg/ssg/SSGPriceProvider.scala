@@ -11,6 +11,7 @@ import scala.math._
 import mtg.persistence.EditionDAO
 import nu.validator.htmlparser.sax.HtmlParser
 import nu.validator.htmlparser.common.XmlViolationPolicy
+import com.weiglewilczek.slf4s.{Logging, Logger}
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
   def prices: Set[PriceSnapshot] = {
@@ -28,22 +29,24 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
 
   protected case class SSGPageInfo(cards: Seq[PriceSnapshot], hasNext: Boolean)
 
-  protected case class SSGHTMLPage(edition: Edition, offset: Int = 0) {
+  protected case class SSGHTMLPage(edition: Edition, offset: Int = 0) extends Logging {
 
     private lazy val pageInfo: SSGPageInfo = {
       parse
     }
 
     lazy val decryptor = new SSGDecryptor((html \\ "style").text.trim)
+
     def getCards = pageInfo.cards
+
     def isHasNext = pageInfo.hasNext
 
     private lazy val html = HTMLParser.load(
       new URL("http://sales.starcitygames.com/spoiler/display.php?" +
-            "s%5Bcor2%5D=" + edition.ssgId +
-            "&%s&display=3" +
-            "&startnum=" + offset +
-            "&numpage=200&for=no&foil=all")
+        "s%5Bcor2%5D=" + edition.ssgId +
+        "&%s&display=3" +
+        "&startnum=" + offset +
+        "&numpage=200&for=no&foil=all")
         .openConnection.getInputStream)
 
     def parse(): SSGPageInfo = {
@@ -64,20 +67,25 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
             cardName = currentText.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = currentEdition.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = EditionDAO.findNameByAlias(cardEdition)
+            if (cardEdition == null) {
+              logger.error("Unable to find edition " + cardEdition)
+              return null
+            }
           }
           val condition = cells(cells.length - 4).text.trim
 
-          val priceDivs: NodeSeq = cells(cells.length - 2) \ "div" \ "div" drop(1)
-          val priceString = priceDivs.map (div =>
+          val priceDivs: NodeSeq = cells(cells.length - 2) \ "div" \ "div" drop (1)
+          val priceString = priceDivs.map(div =>
             div.attribute("class").get.head.text
               .split(' ')
               .filter(klass => decryptor.validCode("." + klass))
               .map(klass => decryptor.decrypt("." + klass))
               .head
-          ).foldLeft[String]("")(_+_)
+          ).foldLeft[String]("")(_ + _)
           val price = round(priceString.toDouble * 100) / 100.0
           new PriceSnapshot(new CardItem(cardName, cardEdition, condition, foil), price, new Date())
-      }
+      } filter (_ != null)
+
       val hasNext = tr(1).text.contains("Next")
       new SSGPageInfo(cards, hasNext)
     }

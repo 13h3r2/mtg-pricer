@@ -3,14 +3,22 @@ package mtg.model
 import java.util.Date
 
 
-case class CardItem(name: String, edition: String, condition: String, foil: Boolean)
+case class CardItem(name: String, edition: String, condition: String, foil: Boolean) {
+  override def toString() = {
+    name + " - " + edition + (if (foil) " (FOIL)" else "") +  " (" + condition + ") "
+  }
+}
 
 case class PriceSnapshot(item: CardItem, price: Double, date: Date) {
-  var diff: Double = 0;
+  var diff: Double = 0
 
   def this(item: CardItem, price: Double, date: Date, diff: Double) {
     this(item, price, date)
     this.diff = diff
+  }
+
+  override def toString() = {
+    (item :: diff :: price :: date :: Nil) mkString ", "
   }
 }
 
@@ -28,6 +36,6 @@ class Edition {
     this.ssgId = ssgId
   }
 
-  override def toString = List (name, ssgId, alias).mkString(",")
+  override def toString = List(name, ssgId, alias).mkString(",")
 }
 

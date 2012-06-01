@@ -6,6 +6,7 @@ import actors.{IScheduler, Actor}
 import mtg.model.{Edition, PriceSnapshot}
 import com.weiglewilczek.slf4s.Logging
 import mtg.persistence.{DatabaseUtil, CardDAO, Connection, EditionDAO}
+import java.util.Date
 
 trait PriceProvider {
   def prices: Set[PriceSnapshot]
@@ -56,6 +57,7 @@ object PriceUpdater extends Logging {
         case _ =>
           RebuildMonthPriceChanges.doIt();
           DatabaseUtil.copyDB("mtg", "mtg-backup")
+          MailNotifier.notify(new Date())
           logger.info("callbacks complete")
       }
     }
@@ -85,7 +87,7 @@ object PriceUpdater extends Logging {
   object PrintActorScheduler {
     def newScheduler(): IScheduler = {
       logger.debug("create scheduler")
-      val s = new ForkJoinScheduler(10, 10, true, false)
+      val s = new ForkJoinScheduler(40, 40, true, false)
       s.start()
       s
     }
