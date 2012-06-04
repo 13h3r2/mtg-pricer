@@ -4,7 +4,6 @@ import mtg.persistence.Connection
 import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
 import com.osinka.subset.stringToField
-import java.util.{List => JList}
 import javax.ws.rs._
 import mtg.model.mapping._;
 
@@ -12,7 +11,7 @@ import mtg.model.mapping._;
 @Path("/edition")
 class EditionResource extends Connection with Logging {
 
-  private def max_size(): Int = 50;
+  private def max_size(): Int = 50
 
   @GET
   @Path("/update")

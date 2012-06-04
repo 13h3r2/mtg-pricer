@@ -2,20 +2,16 @@ package mtg.ssg
 
 
 case class SSGDecryptor(secret: String) {
-  def decrypt(s: String): String = {
-    map(s)
-  }
+  def decrypt(s: String) = map(s)
   def validCode(s: String) = map.contains(s)
-
   lazy val map = SSGDecryptor.buildDecryptMap(secret)
-
 }
 
 object SSGDecryptor {
 
   def buildDecryptMap(secret: String) = {
     var result = Map[String, String]()
-    pattern findAllIn (secret) foreach (_ match {
+    pattern findAllIn(secret) foreach (_ match {
       case pattern(name, value) => result += name -> map(value)
       case _ => throw new Exception
     })

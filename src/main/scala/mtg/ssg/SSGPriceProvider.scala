@@ -11,42 +11,29 @@ import scala.math._
 import mtg.persistence.EditionDAO
 import nu.validator.htmlparser.sax.HtmlParser
 import nu.validator.htmlparser.common.XmlViolationPolicy
-import com.weiglewilczek.slf4s.{Logging, Logger}
+import com.weiglewilczek.slf4s.Logging
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
-  def prices: Set[PriceSnapshot] = {
-    var result: Set[PriceSnapshot] = Set.empty
-    for (p <- new SSGPageSearch(edition)) {
-      result ++= p.getCards.toSet
-    }
-    result
-  }
-
-  override def toString: java.lang.String = {
-    new java.lang.String("SSGPP " + edition)
-  }
-
-
   protected case class SSGPageInfo(cards: Seq[PriceSnapshot], hasNext: Boolean)
 
+  def prices: Set[PriceSnapshot] = {
+    new SSGPageSearch(edition).foldLeft(Set.empty[PriceSnapshot])({ _ ++ _.getCards.toSet })
+  }
+  override def toString = "SSGPP " + edition
+
   protected case class SSGHTMLPage(edition: Edition, offset: Int = 0) extends Logging {
-
-    private lazy val pageInfo: SSGPageInfo = {
-      parse
-    }
-
-    lazy val decryptor = new SSGDecryptor((html \\ "style").text.trim)
+    private lazy val pageInfo = parse
+    private lazy val decryptor = new SSGDecryptor((html \\ "style").text.trim)
 
     def getCards = pageInfo.cards
-
     def isHasNext = pageInfo.hasNext
 
     private lazy val html = HTMLParser.load(
       new URL("http://sales.starcitygames.com/spoiler/display.php?" +
-        "s%5Bcor2%5D=" + edition.ssgId +
-        "&%s&display=3" +
-        "&startnum=" + offset +
-        "&numpage=200&for=no&foil=all")
+          "s%5Bcor2%5D=" + edition.ssgId +
+          "&%s&display=3" +
+          "&startnum=" + offset +
+          "&numpage=200&for=no&foil=all")
         .openConnection.getInputStream)
 
     def parse(): SSGPageInfo = {
