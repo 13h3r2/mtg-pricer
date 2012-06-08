@@ -57,7 +57,7 @@ object PriceUpdater extends Logging {
         case _ =>
           RebuildMonthPriceChanges.doIt();
           DatabaseUtil.copyDB("mtg", "mtg-backup")
-          MailNotifier.notify(new Date())
+          //MailNotifier.notify(new Date())
           logger.info("callbacks complete")
       }
     }

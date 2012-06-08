@@ -1,18 +1,24 @@
 package mtg.ssg
 
 
-case class SSGDecryptor(secret: String) {
-  def decrypt(s: String) = map(s)
+case class SSGDecryptor(secret: String, palette: String) {
+  def decrypt(s: String) : String = {
+    val symbol = map(s)
+    val positionInPalette = SSGDecryptor.positionMap(symbol)
+    palette.charAt(positionInPalette).toString
+  }
+
   def validCode(s: String) = map.contains(s)
-  lazy val map = SSGDecryptor.buildDecryptMap(secret)
+
+  val map = SSGDecryptor.buildDecryptMap(secret)
 }
 
 object SSGDecryptor {
 
   def buildDecryptMap(secret: String) = {
     var result = Map[String, String]()
-    pattern findAllIn(secret) foreach (_ match {
-      case pattern(name, value) => result += name -> map(value)
+    pattern findAllIn (secret) foreach (_ match {
+      case pattern(name, value) => result += name -> offsetMap(value)
       case _ => throw new Exception
     })
     result
@@ -20,7 +26,21 @@ object SSGDecryptor {
 
   val pattern = "(\\.[a-zA-Z0-9]+)[^\\{]*\\{background-position:([^\\ ]+).*".r
 
-  val map = Map(
+  val positionMap = Map(
+    "1" -> 0,
+    "2" -> 1,
+    "3" -> 2,
+    "4" -> 3,
+    "5" -> 4,
+    "6" -> 5,
+    "7" -> 6,
+    "8" -> 7,
+    "9" -> 8,
+    "." -> 9,
+    "0" -> 10
+  )
+
+  val offsetMap = Map(
     "0px" -> "1",
     "-7px" -> "2",
     "-14px" -> "3",

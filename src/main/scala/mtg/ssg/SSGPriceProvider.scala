@@ -12,6 +12,8 @@ import mtg.persistence.EditionDAO
 import nu.validator.htmlparser.sax.HtmlParser
 import nu.validator.htmlparser.common.XmlViolationPolicy
 import com.weiglewilczek.slf4s.Logging
+import org.apache.commons.io.IOUtils
+
 
 class SSGPriceProvider(edition: Edition) extends PriceProvider {
   protected case class SSGPageInfo(cards: Seq[PriceSnapshot], hasNext: Boolean)
@@ -23,7 +25,6 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
 
   protected case class SSGHTMLPage(edition: Edition, offset: Int = 0) extends Logging {
     private lazy val pageInfo = parse
-    private lazy val decryptor = new SSGDecryptor((html \\ "style").text.trim)
 
     def getCards = pageInfo.cards
     def isHasNext = pageInfo.hasNext
@@ -38,8 +39,18 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
 
     def parse(): SSGPageInfo = {
       val tr = (((html \\ "table")(1) \\ "table")(2) \\ "table")(1) \\ "tr"
-      val cardLines = tr.slice(4, tr.length - 2)
+      val style = (html \\ "style").text.trim
 
+      val pattern = "background-image:url\\(([^\\ \\)]+).*".r
+      var url: String = ""
+      pattern findFirstIn (style) foreach (_ match {
+        case pattern(a) => url = a
+      })
+      val palette: String = SSGOCR.doOCR(IOUtils.toByteArray(new URL(url).openConnection().getInputStream()))
+      val decryptor = new SSGDecryptor((html \\ "style").text.trim, palette)
+
+
+      val cardLines = tr.slice(4, tr.length - 2)
       //процессим ситуацию когда идет один заголовок и несколько кондишенов
       var cardName: String = null
       var cardEdition: String = null

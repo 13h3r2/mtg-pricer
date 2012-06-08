@@ -1,11 +1,9 @@
 package mtg
 
-import actions.MailNotifier
-import actions.PriceUpdater.UpdateActor
-import model.Edition
 import org.apache.log4j.BasicConfigurator
-import ssg.SSGPriceProvider
-import java.util.Date
+import org.apache.commons.io.IOUtils
+import java.io.{FileInputStream, File}
+import ssg.SSGOCR
 
 
 /**
@@ -13,12 +11,19 @@ import java.util.Date
  */
 object Test extends App {
   BasicConfigurator.configure
-//  val updateActor = new UpdateActor
-//
-//  new SSGPriceProvider(new Edition("", "5221", Nil))
-//    .prices
-//    .foreach(println _)
-  MailNotifier.notify(new Date())
-
+  //    new SSGPriceProvider(new Edition("", "5221", Nil))
+  //      .prices
+  //      .foreach(println _)
+  new File("/home/alexey/git/ssg-break/images")
+    .list()
+    .filter(_.endsWith(".png"))
+    .foreach(f => {
+    try {
+      SSGOCR.doOCR(IOUtils.toByteArray(new FileInputStream("/home/alexey/git/ssg-break/images/" + f)))
+    }
+    catch {
+      case f => {println(f)}
+    }
+  })
 }
 

@@ -4,8 +4,7 @@ import java.util.{Calendar, Date}
 import mtg.persistence.Connection
 import com.osinka.subset._
 import mtg.model.mapping._
-import org.apache.commons.mail.{HtmlEmail, Email}
-import java.text.SimpleDateFormat
+import org.apache.commons.mail.HtmlEmail
 import org.apache.commons.lang.time.{FastDateFormat, DateUtils}
 import javax.mail.internet.MimeMultipart
 
@@ -34,8 +33,8 @@ object MailNotifier extends Connection {
 
     mail.setHostName("127.0.0.1")
     mail.addTo("alexey.romanchuk@gmail.com")
-    mail.addTo("manapoint.mtg@gmail.com")
-    mail.addTo("aleksey.kuzmenok@gmail.com")
+//    mail.addTo("manapoint.mtg@gmail.com")
+//    mail.addTo("aleksey.kuzmenok@gmail.com")
     mail.setFrom("alexey.romanchuk@gmail.com")
 
     mail.setSubject("[SSG Prices] " + FastDateFormat.getInstance("yyyy-MM-dd").format(start));
