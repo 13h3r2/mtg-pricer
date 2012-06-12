@@ -22,7 +22,9 @@ object Test extends App {
       SSGOCR.doOCR(IOUtils.toByteArray(new FileInputStream("/home/alexey/git/ssg-break/images/" + f)))
     }
     catch {
-      case f => {println(f)}
+      case f => {
+        println(f)
+      }
     }
   })
 }
