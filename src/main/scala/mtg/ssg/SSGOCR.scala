@@ -34,8 +34,9 @@ object SSGOCR {
     val fos: FileOutputStream = new FileOutputStream(filename)
     try {
       IOUtils.write(image, fos)
-      val p = Runtime.getRuntime.exec("/usr/bin/gocr -m 2 -a " + factor + " -p ocr/db/ -C 0123456789. " + filename)
-      assert(p.waitFor() == 0)
+      val command: String = "gocr -m 2 -a " + factor + " -p ocr/db/ -C 0123456789. " + filename
+      val p = Runtime.getRuntime.exec(command)
+      assert(p.waitFor() == 0, "Wrong exit code - " + p.exitValue + ". Command - " + command)
       val palette = IOUtils.readLines(p.getInputStream).get(0).replaceAll(" ", "").trim
       p.destroy
 

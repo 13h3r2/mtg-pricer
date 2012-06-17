@@ -37,7 +37,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
           "&numpage=200&for=no&foil=all")
         .openConnection.getInputStream)
 
-    def parse(): SSGPageInfo = {
+    def parse: SSGPageInfo = {
       val tr = (((html \\ "table")(1) \\ "table")(2) \\ "table")(1) \\ "tr"
       val style = (html \\ "style").text.trim
 
@@ -60,7 +60,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
           val cells = (W \\ "td")
           val currentText = cells(0).text.trim
           val currentEdition = cells(1).text.trim
-          if (currentText.length() > 1) {
+          if (currentText.length > 1) {
             foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)") || currentText.contains("(FOIL)") || currentText.contains("(Foil)")
             cardName = currentText.replace("(FOIL)", "").replace("(Foil)", "").trim
             cardEdition = currentEdition.replace("(FOIL)", "").replace("(Foil)", "").trim
@@ -111,7 +111,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       currentPage == null || currentPage.isHasNext
     }
 
-    def next() = {
+    def next = {
       if (currentPage != null)
         currentOffset += 200
       currentPage = SSGHTMLPage(edition, currentOffset)

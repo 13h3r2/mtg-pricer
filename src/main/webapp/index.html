@@ -86,6 +86,55 @@
                 </div>
             </div>
         </div>
+
+        <!-- month changes -->
+        <div data-bind="visible: navigation.active() == monthChanges">
+
+            <div class="row" data-bind="with: monthChanges">
+                <div class="span12">
+                    <div class="pagination pagination-centered">
+                        <ul>
+                            <li><a href="#" data-bind="click: prev">&larr;</a></li>
+                            <li class="active"><a href="#" data-bind="text: dateText">1</a></li>
+                            <li><a href="#" data-bind="click: next">&rarr;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!--month changes tabke-->
+            <div class="row" data-bind="with: monthChanges.table">
+                <div class="span12">
+                    <div class="pagination pagination-centered">
+                        <ul>
+                            <!-- ko foreach: pages -->
+                            <li data-bind="css : { active : $parent.currentPage() == offset }">
+                                <a href="#" data-bind="text: name, click: $parent.selectPage">1</a>
+                            </li>
+                            <!-- /ko -->
+                        </ul>
+                    </div>
+                    <table class="table table-bordered table-condensed">
+                        <thead>
+                        <tr>
+                            <th width="70%">Result</th>
+                            <th width="10%">Change</th>
+                            <th width="20%">Current</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: items">
+                        <tr>
+                            <td data-bind="text: fullName()">Tundra</td>
+                            <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
+                            <td width="20%" data-bind="text: current">50</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
         <!--editions-->
         <div class="row" data-bind="with: editions, visible: navigation.active() == editions">
             <div class="span12">

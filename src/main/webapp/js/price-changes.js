@@ -20,7 +20,6 @@ function ChangesPanel(page) {
     this.table = new AjaxTable(page);
     this.date = ko.observable(new Date());
     this.dayChangeProvider = new DayChangesDataProvider(this, this.table);
-    this.monthChangeProvider = new MonthChangesDataProvider(this, this.table);
     this.table.provider = this.dayChangeProvider;
 
     this.dateText = ko.dependentObservable(function () {
@@ -39,11 +38,41 @@ function ChangesPanel(page) {
     };
 }
 
+function MonthChangesPanel(page) {
+    var self = this;
+    this.table = new AjaxTable(page);
+
+    var firstDayOfCurrentMonth = new Date();
+    firstDayOfCurrentMonth.setDate(1);
+    this.date = ko.observable(firstDayOfCurrentMonth);
+
+    this.monthChangeProvider = new MonthChangesDataProvider(this, this.table);
+    this.table.provider = this.monthChangeProvider;
+
+    this.dateText = ko.dependentObservable(function () {
+        return $.datepicker.formatDate('yy-mm-dd', this.date());
+    }, this);
+
+    this.next = function () {
+        var newDate = new Date(this.date().getTime());
+        newDate.setMonth(newDate.getMonth() + 1);
+        this.date(newDate);
+        this.table.load();
+    };
+    this.prev = function () {
+        var newDate = new Date(this.date().getTime());
+        newDate.setMonth(newDate.getMonth() - 1);
+        this.date(newDate);
+        this.table.load();
+    };
+}
+
+
 
 function MonthChangesDataProvider(changesPanel, table) {
     var self = this;
     this.loadPage = function () {
-        _ajaxCall("/api/price/changes/interval?size=20" +
+        _ajaxCall("/api/price/changes/month?size=20" +
             "&offset=" + table.currentPage() +
             "&date=" + changesPanel.dateText(),
             function (json) {
@@ -69,7 +98,7 @@ function MonthChangesDataProvider(changesPanel, table) {
     };
 
     this.load = function () {
-        _ajaxCall("/api/price/changes/interval/size?date=" + changesPanel.dateText(),
+        _ajaxCall("/api/price/changes/month/size?date=" + changesPanel.dateText(),
             function (json) {
                 table.pages.removeAll();
                 var count = json["result"];
