@@ -33,8 +33,8 @@ object MailNotifier extends Connection {
 
     mail.setHostName("127.0.0.1")
     mail.addTo("alexey.romanchuk@gmail.com")
-//    mail.addTo("manapoint.mtg@gmail.com")
-//    mail.addTo("aleksey.kuzmenok@gmail.com")
+    mail.addTo("manapoint.mtg@gmail.com")
+    mail.addTo("aleksey.kuzmenok@gmail.com")
     mail.setFrom("alexey.romanchuk@gmail.com")
 
     mail.setSubject("[SSG Prices] " + FastDateFormat.getInstance("yyyy-MM-dd").format(start));

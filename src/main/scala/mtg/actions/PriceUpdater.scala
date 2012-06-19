@@ -87,7 +87,7 @@ object PriceUpdater extends Logging {
   object PrintActorScheduler {
     def newScheduler(): IScheduler = {
       logger.debug("create scheduler")
-      val s = new ForkJoinScheduler(40, 40, true, false)
+      val s = new ForkJoinScheduler(10, 10, true, false)
       s.start()
       s
     }

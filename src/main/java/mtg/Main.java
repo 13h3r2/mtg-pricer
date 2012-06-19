@@ -78,7 +78,8 @@ public class Main {
 
         CalendarIntervalScheduleBuilder schedule = CalendarIntervalScheduleBuilder
                 .calendarIntervalSchedule()
-                .withIntervalInDays(1);
+                .withIntervalInDays(1)
+                .withMisfireHandlingInstructionDoNothing();
 
         CalendarIntervalTrigger trigger = TriggerBuilder
                 .newTrigger()
