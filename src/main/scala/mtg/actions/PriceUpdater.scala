@@ -17,7 +17,7 @@ object PriceUpdater extends Logging {
   def update {
     val updateActor = new UpdateActor
     updateActor.start
-    updateActor ! EditionDAO.findAll(100000).toSet
+    updateActor ! EditionDAO.findAll(1000000).toSet
   }
 
   class UpdateActor extends Actor with Logging {
@@ -87,7 +87,7 @@ object PriceUpdater extends Logging {
   object PrintActorScheduler {
     def newScheduler(): IScheduler = {
       logger.debug("create scheduler")
-      val s = new ForkJoinScheduler(10, 10, true, false)
+      val s = new ForkJoinScheduler(20, 20, true, false)
       s.start()
       s
     }

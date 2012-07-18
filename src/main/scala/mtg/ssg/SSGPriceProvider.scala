@@ -28,7 +28,7 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
 
     def getCards = pageInfo.cards
     def isHasNext = pageInfo.hasNext
-
+    //http://sales.starcitygames.com/spoiler/display.php?s%5Bcor2%5D=1003&%s&display=3&startnum=0&numpage=200&for=no&foil=all
     private lazy val html = HTMLParser.load(
       new URL("http://sales.starcitygames.com/spoiler/display.php?" +
           "s%5Bcor2%5D=" + edition.ssgId +
@@ -58,8 +58,8 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
       val cards = cardLines map {
         W =>
           val cells = (W \\ "td")
-          val currentText = cells(0).text.trim
-          val currentEdition = cells(1).text.trim
+          val currentText = cells(0).text.replaceAll("\u00a0","").trim
+          val currentEdition = cells(1).text.replaceAll("\u00a0","").trim
           if (currentText.length > 1) {
             foil = currentEdition.contains("(FOIL)") || currentEdition.contains("(Foil)") || currentText.contains("(FOIL)") || currentText.contains("(Foil)")
             cardName = currentText.replace("(FOIL)", "").replace("(Foil)", "").trim
@@ -70,18 +70,30 @@ class SSGPriceProvider(edition: Edition) extends PriceProvider {
               return null
             }
           }
-          val condition = cells(cells.length - 4).text.trim
+          val condition = cells(cells.length - 4).text.replaceAll("\u00a0","").trim
 
           val priceDivs: NodeSeq = cells(cells.length - 2) \ "div" \ "div" drop (1)
-          val priceString = priceDivs.map(div =>
+          var priceString = priceDivs.map(div =>
             div.attribute("class").get.head.text
               .split(' ')
               .filter(klass => decryptor.validCode("." + klass))
               .map(klass => decryptor.decrypt("." + klass))
               .head
           ).foldLeft[String]("")(_ + _)
-          val price = round(priceString.toDouble * 100) / 100.0
-          new PriceSnapshot(new CardItem(cardName, cardEdition, condition, foil), price, new Date())
+
+          if(priceString.isEmpty) {
+            //try strike out text
+            val price: NodeSeq = cells(cells.length - 2) \ "span"
+            priceString = price.last.text.substring(1)
+          }
+          if(!priceString.isEmpty) {
+            val price = round(priceString.toDouble * 100) / 100.0
+            new PriceSnapshot(new CardItem(cardName, cardEdition, condition, foil), price, new Date())
+          }
+          else {
+            logger.warn("Unable to parse price " + W)
+            null
+          }
       } filter (_ != null)
 
       val hasNext = tr(1).text.contains("Next")
