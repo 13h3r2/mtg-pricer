@@ -37,7 +37,7 @@ object MailNotifier extends Connection {
 //    mail.addTo("aleksey.kuzmenok@gmail.com")
     mail.setFrom("alexey.romanchuk@gmail.com")
 
-    mail.setSubject("[SSG Prices] " + FastDateFormat.getInstance("yyyy-MM-dd").format(start));
+    mail.setSubject("[SСG Prices] " + FastDateFormat.getInstance("yyyy-MM-dd").format(start));
     mail.setContent(new MimeMultipart())
     mail.setHtmlMsg(text)
     mail.send()

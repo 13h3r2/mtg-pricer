@@ -5,7 +5,7 @@ $(document).ready(function () {
 );
 
 function Page() {
-    this.сhanges = new ChangesPanel(this);
+    this.changes = new ChangesPanel(this);
     this.monthChanges = new MonthChangesPanel(this);
     this.editions = new Editions(this);
     this.upload = new UploadPanel(this);

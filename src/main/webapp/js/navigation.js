@@ -1,6 +1,6 @@
 function Navigation(page) {
     this.items = ko.observableArray([
-        new NavigationItem(this, "Day changes", page.сhanges.table.load, page.сhanges),
+        new NavigationItem(this, "Day changes", page.changes.table.load, page.changes),
         new NavigationItem(this, "Month changes", page.monthChanges.table.load, page.monthChanges),
         new NavigationItem(this, "Editions", page.editions.reload, page.editions),
         new NavigationItem(this, "Export", null, page.upload)
