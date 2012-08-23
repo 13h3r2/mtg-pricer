@@ -16,16 +16,22 @@
         <repository>
             <id>scala-tools-releases</id>
             <name>Scala-Tools Maven2 Repository Releases</name>
-            <url>http://scala-tools.org/repo-releases</url>
+            <url>https://oss.sonatype.org/content/groups/scala-tools</url>
         </repository>
         <repository>
             <id>scala-tools-snapshots</id>
             <name>Scala-Tools Maven2 Repository - Snapshots</name>
             <url>http://scala-tools.org/repo-snapshots</url>
         </repository>
+        <repository>
+            <id>java net</id>
+            <name>java net</name>
+            <url>https://maven.java.net/content/repositories/releases</url>
+        </repository>
     </repositories>
     <properties>
         <scala.version>2.9.1</scala.version>
+        <jersey.version>1.12</jersey.version>
     </properties>
 
     <pluginRepositories>
@@ -52,14 +58,14 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.1</version>
-        </dependency>
+            </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
+        <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.3</version>
         </dependency>
         <dependency>
-            <groupId>commons-email</groupId>
+            <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.1</version>
         </dependency>
@@ -77,12 +83,12 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.grizzly</groupId>
@@ -92,12 +98,12 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-grizzly</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -133,37 +139,37 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>copy-dependencies</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>copy-dependencies</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                <!--<version>2.2.1</version>-->
+                <!--<configuration>-->
+                    <!--<descriptors>-->
+                        <!--<descriptor>assembly.xml</descriptor>-->
+                    <!--</descriptors>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>single</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
@@ -201,21 +207,21 @@
                     </args>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-dependencies</id>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeTypes>pom</excludeTypes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>unpack-dependencies</id>-->
+                        <!--<goals>-->
+                            <!--<goal>unpack-dependencies</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<excludeTypes>pom</excludeTypes>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -234,24 +240,30 @@
                     <source>1.6</source>
                     <target>1.6</target>
                     <optimize>true</optimize>
+                    <includes>
+                        <include>src/main/java</include>
+                    </includes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>mtg.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<mainClass>mtg.Main</mainClass>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
-        <resources>
-            <resource>
-                <directory>${basedir}/target/dependency</directory>
-            </resource>
-        </resources>
+        <!--<resources>-->
+
+            <!--<resource>-->
+                <!--<directory>${basedir}/target/dependency</directory>-->
+            <!--</resource>-->
+        <!--</resources>-->
+        <sourceDirectory>src/main/scala</sourceDirectory>
     </build>
+
 </project>

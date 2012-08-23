@@ -1,21 +1,18 @@
 package mtg
 
-import actions.RebuildMonthPriceChanges
-import org.apache.log4j.BasicConfigurator
+import model.Edition
+import ssg.SSGPriceProvider
 
 
 /**
  * cat  /tmp/1 | sed -r s/\ *\(.*\)/\\1/ | sed s/\<\\/a\>\<br\>//
  */
-object Test {
-  def main(args: Array[String]) = {
-    BasicConfigurator.configure
-    RebuildMonthPriceChanges.doIt
-  }
+object Test extends App {
 
-  //      new SSGPriceProvider(new Edition("", "5221", Nil))
-  //        .prices
-  //        .foreach(println _)
+  new SSGPriceProvider(new Edition("", "5221", Nil))
+    .prices
+    .foreach(println _)
+
 
   //  new File("/home/alexey/git/ssg-break/images")
   //    .list()
