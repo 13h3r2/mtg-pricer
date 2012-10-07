@@ -31,7 +31,7 @@
 <div class="container" id="main-container">
     <div class="page-header"><h1>Pricer</h1></div>
     <div class="content">
-        
+
         <!--NAVIGATION-->
         <div class="row">
             <ul class="nav nav-pills" data-bind="foreach: navigation.items">
@@ -78,7 +78,9 @@
                         <tbody data-bind="foreach: items">
                         <tr>
                             <td data-bind="text: fullName()">Tundra</td>
-                            <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
+                            <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">
+                                +10
+                            </td>
                             <td width="20%" data-bind="text: current">50</td>
                         </tr>
                         </tbody>
@@ -102,7 +104,7 @@
                 </div>
             </div>
 
-            <!--month changes tabke-->
+            <!--month changes table-->
             <div class="row" data-bind="with: monthChanges.table">
                 <div class="span12">
                     <div class="pagination pagination-centered">
@@ -125,7 +127,9 @@
                         <tbody data-bind="foreach: items">
                         <tr>
                             <td data-bind="text: fullName()">Tundra</td>
-                            <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">+10</td>
+                            <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">
+                                +10
+                            </td>
                             <td width="20%" data-bind="text: current">50</td>
                         </tr>
                         </tbody>
@@ -136,8 +140,17 @@
 
 
         <!--editions-->
-        <div class="row" data-bind="with: editions, visible: navigation.active() == editions">
+        <div class="row" data-bind="with: editions.table, visible: navigation.active() == editions">
             <div class="span12">
+                <div class="pagination pagination-centered">
+                    <ul>
+                        <!-- ko foreach: pages -->
+                        <li data-bind="css : { active : $parent.currentPage() == offset }">
+                            <a href="#" data-bind="text: name, click: $parent.selectPage">1</a>
+                        </li>
+                        <!-- /ko -->
+                    </ul>
+                </div>
                 <table class="table table-bordered table-condensed">
                     <thead>
                     <tr>
@@ -146,17 +159,19 @@
                         <th width="70%">Aliases</th>
                     </tr>
                     </thead>
-                    <tbody data-bind="foreach: editions">
+                    <tbody data-bind="foreach: items">
                     <tr>
                         <td data-bind="text: name">Alpha</td>
                         <td data-bind="text: ssgId">Alpha</td>
                         <td data-bind="text: aliases">
-                            <div style="min-height:20px;min-width: 100%;" data-bind="click: switchEdit, visible: !isEditMode()">
-                            <span  data-bind="text: aliases">
+                            <div style="min-height:20px;min-width: 100%;"
+                                 data-bind="click: switchEdit, visible: !isEditMode()">
+                            <span data-bind="text: aliases">
                                 ALPH, ALP
                             </span>
                             </div>
-                            <textarea style="width: 100%;" data-bind="value: aliasesEdit, visible: isEditMode()"></textarea>
+                            <textarea style="width: 100%;"
+                                      data-bind="value: aliasesEdit, visible: isEditMode()"></textarea>
                             <a data-bind="click: save, visible: isEditMode()" class="btn">save</a>
                             <a data-bind="click: cancel, visible: isEditMode()" class="btn">cancel</a>
                         </td>
@@ -169,7 +184,7 @@
         <div class="row" data-bind="visible: navigation.active() == upload">
             <form class="well form-inline" method="POST" action="/export" enctype="multipart/form-data">
                 <input type="file" name="file" class="input-file"/>
-                <input type="submit" class="btn" value="name" name="name" />
+                <input type="submit" class="btn" value="name" name="name"/>
             </form>
         </div>
     </div>

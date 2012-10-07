@@ -7,38 +7,34 @@ function Edition(name, ssgId, aliases, editionsList) {
     this.aliases = ko.observable(aliases);
     this.aliasesEdit = ko.observable(aliases);
 
-    this.switchEdit = function() {
-        if(!this.isEditMode()) {
+    this.switchEdit = function () {
+        if (!this.isEditMode()) {
             this.editionsList.clearAllSelected();
             this.isEditMode(true);
         }
     };
-    this.save = function() {
+    this.save = function () {
         _ajaxCall("/api/edition/update?" +
             "name=" + encodeURI(this.name) +
             "&alias=" + encodeURI(this.aliasesEdit()),
-            function() {
+            function () {
                 self.aliases(self.aliasesEdit());
                 self.isEditMode(false);
             }
         );
     };
-    this.cancel = function() {
+    this.cancel = function () {
         this.aliasesEdit(this.aliases());
         this.isEditMode(false);
     };
 }
-
-function Editions(page) {
+function EditionsProvider(table) {
     var self = this;
-    this.page = page;
-    this.editions = ko.observableArray([
-        new Edition("Test", ["Test", "123", "TST", "TESTTT"])
-    ]);
-    this.reload = function() {
-        _ajaxCall("/api/edition",
+    this.loadPage = function () {
+        _ajaxCall("/api/edition?size=20" +
+            "&offset=" + table.currentPage(),
             function (json) {
-                self.editions.removeAll();
+                table.items.removeAll();
                 var result = json["result"];
                 var newItems = [];
                 for (var i in result) {
@@ -52,11 +48,34 @@ function Editions(page) {
                             ));
                     }
                 }
-                self.editions(newItems);
+                table.items(newItems);
             })
+    };
+
+    this.load = function () {
+        _ajaxCall("/api/edition/size",
+            function (json) {
+                table.pages.removeAll();
+                var count = json["result"];
+                var currentPage = 0;
+                do {
+                    currentPage++;
+                    table.pages.push(new AjaxTableLink("" + currentPage, (currentPage - 1) * table.ITEMS_PER_PAGE));
+                } while (currentPage * table.ITEMS_PER_PAGE < count);
+                table.currentPage(0);
+                self.loadPage();
+            });
     }
 
-    this.clearAllSelected = function() {
-        this.editions().forEach(function(edition) { if(edition.isEditMode()) edition.isEditMode(false)});
-    }
+
+}
+
+function Editions(page) {
+    this.page = page;
+    this.table = new AjaxTable(page);
+    this.table.provider = new EditionsProvider(this.table)
+
+//    this.clearAllSelected = function() {
+//        this.editions().forEach(function(edition) { if(edition.isEditMode()) edition.isEditMode(false)});
+//    }
 }

@@ -12,4 +12,4 @@ billing-tests/bin
 billing-webapp/bin
 .sass-cache/
 billing-scripts/bin
-
+ocr/*.png

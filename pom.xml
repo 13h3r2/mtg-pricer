@@ -17,11 +17,7 @@
             <id>scala-tools-releases</id>
             <name>Scala-Tools Maven2 Repository Releases</name>
             <url>https://oss.sonatype.org/content/groups/scala-tools</url>
-        </repository>
-        <repository>
-            <id>scala-tools-snapshots</id>
-            <name>Scala-Tools Maven2 Repository - Snapshots</name>
-            <url>http://scala-tools.org/repo-snapshots</url>
+
         </repository>
         <repository>
             <id>java net</id>

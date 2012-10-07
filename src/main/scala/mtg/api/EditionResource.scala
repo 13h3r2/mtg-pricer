@@ -3,9 +3,9 @@ package mtg.api
 import mtg.persistence.Connection
 import com.weiglewilczek.slf4s.Logging
 import org.codehaus.jettison.json.{JSONObject, JSONArray}
-import com.osinka.subset.stringToField
-import javax.ws.rs._
-import mtg.model.mapping._;
+import mtg.model.mapping._
+import javax.ws.rs.{DefaultValue, QueryParam, GET, Path}
+import com.osinka.subset._
 
 
 @Path("/edition")
@@ -16,13 +16,14 @@ class EditionResource extends Connection with Logging {
   @GET
   @Path("/update")
   def update(
-    @QueryParam("name") editionName : String,
-    @QueryParam("alias") @DefaultValue("") aliases : String) : JSONObject = {
+              @QueryParam("name") editionName: String,
+              @QueryParam("alias") @DefaultValue("") aliases: String)
+  : JSONObject = {
 
     val newAliases = aliases
       .split(",")
       .map(_.trim())
-      .filter( !_.isEmpty )
+      .filter(!_.isEmpty)
       .toList
 
     conn("edition").update(
@@ -33,13 +34,23 @@ class EditionResource extends Connection with Logging {
   }
 
   @GET
-  def searchCard()
+  def search(
+              @DefaultValue("0") @QueryParam("offset") offset: Int,
+             @DefaultValue("20") @QueryParam("size") size: Int)
   : JSONObject = {
     val result = conn("edition")
       .find()
-      .sort("name".fieldOf[Double](1))
+      .limit(size)
+      .skip(offset)
+      .sort("ssgId".fieldOf[Double](-1))
       .map(JSONTransformer.transform(_))
       .foldLeft(new JSONArray)((array, item) => array.put(item))
     new JSONObject().put("result", result)
+  }
+
+  @GET
+  @Path("/size")
+  def dateSearchCardSize(): JSONObject = {
+    new JSONObject().put("result", conn("edition").count)
   }
 }
