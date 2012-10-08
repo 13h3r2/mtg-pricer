@@ -74,8 +74,4 @@ function Editions(page) {
     this.page = page;
     this.table = new AjaxTable(page);
     this.table.provider = new EditionsProvider(this.table)
-
-//    this.clearAllSelected = function() {
-//        this.editions().forEach(function(edition) { if(edition.isEditMode()) edition.isEditMode(false)});
-//    }
 }

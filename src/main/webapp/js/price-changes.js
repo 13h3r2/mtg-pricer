@@ -14,7 +14,6 @@ function PriceChange(name, date, diff, edition, condition, foil, current) {
     };
 }
 
-
 function ChangesPanel(page) {
     var self = this;
     this.table = new AjaxTable(page);
@@ -67,8 +66,6 @@ function MonthChangesPanel(page) {
     };
 }
 
-
-
 function MonthChangesDataProvider(changesPanel, table) {
     var self = this;
     this.loadPage = function () {
@@ -111,11 +108,7 @@ function MonthChangesDataProvider(changesPanel, table) {
                 self.loadPage();
             });
     }
-
-
 }
-
-
 
 function DayChangesDataProvider(changesPanel, table) {
     var self = this;
@@ -159,6 +152,4 @@ function DayChangesDataProvider(changesPanel, table) {
                 self.loadPage();
             });
     }
-
-
 }

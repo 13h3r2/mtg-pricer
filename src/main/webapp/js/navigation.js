@@ -19,7 +19,6 @@ function NavigationItem(navigation, name, activate, panel) {
     this.click = function () {
         //set active at navigation
         self.navigation.active(self.panel);
-        //console.log(self.navigation.active());
         //read data
         if( self.activate != null )
             self.activate();
