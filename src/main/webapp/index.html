@@ -141,11 +141,40 @@
         <!--editions-->
         <div class="row" data-bind="with: editions.table, visible: navigation.active() == editions">
             <div class="span12">
+                <form class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="editionName">Name</label>
+                        <div class="controls">
+                            <input type="text" id="editionName">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="editionSsg">SSG ID</label>
+                        <div class="controls">
+                            <input type="text" id="editionSsg">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="editionAlias">Aliases</label>
+                        <div class="controls">
+                            <input type="text" id="editionAlias">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Save</button>
+                            <button type="reset" class="btn">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="span12">
                 <div class="pagination pagination-centered">
                     <ul>
                         <!-- ko foreach: pages -->
                         <li data-bind="css : { active : $parent.currentPage() == offset }">
                             <a href="#" data-bind="text: name, click: $parent.selectPage">1</a>
+
                         </li>
                         <!-- /ko -->
                     </ul>
@@ -162,17 +191,13 @@
                     <tr>
                         <td data-bind="text: name">Alpha</td>
                         <td data-bind="text: ssgId">Alpha</td>
-                        <td data-bind="text: aliases">
-                            <div style="min-height:20px;min-width: 100%;"
-                                 data-bind="click: switchEdit, visible: !isEditMode()">
+                        <td>
+                            <div style="min-height:20px;min-width: 100%;">
                             <span data-bind="text: aliases">
                                 ALPH, ALP
                             </span>
+                                <i class="icon-pencil" data-bind="click: edit"></i>
                             </div>
-                            <textarea style="width: 100%;"
-                                      data-bind="value: aliasesEdit, visible: isEditMode()"></textarea>
-                            <a data-bind="click: save, visible: isEditMode()" class="btn">save</a>
-                            <a data-bind="click: cancel, visible: isEditMode()" class="btn">cancel</a>
                         </td>
                     </tr>
                     </tbody>
