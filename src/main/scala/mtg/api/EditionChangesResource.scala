@@ -16,12 +16,12 @@ class EditionChangesResource extends Connection with Logging {
                       @DefaultValue("false") @QueryParam("foil") foil: Boolean
                       )
   : JSONObject = {
-    val result = conn("price2Edition")
+    val result = withConnection(conn => conn("price2Edition")
       .find("_id.edition".fieldOf[String] === edition && "_id.foil".fieldOf[Boolean] === foil)
       //.find(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
       .sort("_id.date".fieldOf[Int](1))
       .map(JSONTransformer.transform(_))
-      .foldLeft(new JSONArray)((array, item) => array.put(item))
+      .foldLeft(new JSONArray)((array, item) => array.put(item)))
     new JSONObject().put("result", result)
   }
 }

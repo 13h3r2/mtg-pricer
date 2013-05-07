@@ -13,10 +13,10 @@ object MailNotifier extends Connection {
     val start = DateUtils.truncate(date, Calendar.DATE)
     val end = DateUtils.addDays(start, 1)
 
-    val items = conn("price2")
+    val items = withConnection(conn => conn("price2")
       .find(PriceSnapShotMapping.date >= start < end && PriceSnapShotMapping.absDiff > 0)
       .sort("absDiff".fieldOf[Double](-1) ~ "item.name".fieldOf[Double](1) ~ "item.edition".fieldOf[Double](1))
-      .map(psReader.unpack(_).get)
+      .map(psReader.unpack(_).get))
 
     val text = (items.foldLeft[String]("<html><body><table>")((text, item) => (text +
       """

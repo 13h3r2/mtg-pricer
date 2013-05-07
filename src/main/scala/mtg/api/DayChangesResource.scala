@@ -33,13 +33,14 @@ class DayChangesResource extends Connection with Logging {
 
     val end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
 
-    val result = conn("price2")
+    val result = withConnection(conn => conn("price2")
       .find(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
       .sort("absDiff".fieldOf[Double](-1) ~ "item.name".fieldOf[Double](1) ~ "item.edition".fieldOf[Double](1))
       .limit(maxSize)
       .skip(offset)
       .map(JSONTransformer.transform(_))
       .foldLeft(new JSONArray)((array, item) => array.put(item))
+    )
     new JSONObject().put("result", result)
   }
 
@@ -57,8 +58,8 @@ class DayChangesResource extends Connection with Logging {
 
     val end = DateUtils.truncate(DateUtils.addDays(begin, 1), Calendar.DATE)
 
-    val result = conn("price2")
-      .count(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0)
+    val result = withConnection(conn => conn("price2")
+      .count(PriceSnapShotMapping.date >= begin < end && PriceSnapShotMapping.absDiff > 0))
     new JSONObject().put("result", result)
   }
 

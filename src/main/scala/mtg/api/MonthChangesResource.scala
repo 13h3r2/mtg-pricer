@@ -32,13 +32,13 @@ class MonthChangesResource extends Connection with Logging {
     begin = DateUtils.truncate(begin, Calendar.MONTH)
 
 
-    val result = conn("priceMonth2")
+    val result = withConnection(conn => conn("priceMonth2")
       .find(PriceSnapShotMapping.date === begin && PriceSnapShotMapping.absDiff > 0)
       .sort("absDiff".fieldOf[Double](-1) ~ "item.name".fieldOf[Double](1) ~ "item.edition".fieldOf[Double](1))
       .limit(maxSize)
       .skip(offset)
       .map(JSONTransformer.transform(_))
-      .foldLeft(new JSONArray)((array, item) => array.put(item))
+      .foldLeft(new JSONArray)((array, item) => array.put(item)))
     new JSONObject().put("result", result)
   }
 
@@ -55,8 +55,8 @@ class MonthChangesResource extends Connection with Logging {
     }
     begin = DateUtils.truncate(begin, Calendar.MONTH)
 
-    val result = conn("priceMonth2")
-      .count(PriceSnapShotMapping.date === begin && PriceSnapShotMapping.absDiff > 0)
+    val result = withConnection(conn => conn("priceMonth2")
+      .count(PriceSnapShotMapping.date === begin && PriceSnapShotMapping.absDiff > 0))
     new JSONObject().put("result", result)
   }
 

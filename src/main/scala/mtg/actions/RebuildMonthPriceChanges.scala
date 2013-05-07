@@ -9,7 +9,7 @@ import com.mongodb.casbah.Imports
 object RebuildMonthPriceChanges extends Connection with Logging {
 
   private def execCommand(mr: Imports.DBObject) {
-    val result: CommandResult = conn.command(mr)
+    val result: CommandResult = withConnection(conn => conn.command(mr))
     assert(result.ok(), result.toString)
   }
 
@@ -58,7 +58,7 @@ object RebuildMonthPriceChanges extends Connection with Logging {
     ).toDBObject
 
     execCommand(mr)
-    conn.doEval(
+    withConnection(conn => conn.doEval(
       """
         |db.priceMonth2.remove();
         |db.priceMonth.find().forEach(function (item) {
@@ -74,7 +74,7 @@ object RebuildMonthPriceChanges extends Connection with Logging {
         |        db.priceMonth2.insert(toInsert);
         |    }
         |});
-      """.stripMargin)
+      """.stripMargin))
 
   }
 }

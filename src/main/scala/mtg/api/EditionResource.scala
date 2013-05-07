@@ -26,9 +26,9 @@ class EditionResource extends Connection with Logging {
       .filter(!_.isEmpty)
       .toList
 
-    conn("edition").update(
+    withConnection(conn => conn("edition").update(
       EditionMapping.name(editionName),
-      EditionMapping.alias.set(newAliases))
+      EditionMapping.alias.set(newAliases)))
 
     new JSONObject()
   }
@@ -38,19 +38,19 @@ class EditionResource extends Connection with Logging {
               @DefaultValue("0") @QueryParam("offset") offset: Int,
              @DefaultValue("20") @QueryParam("size") size: Int)
   : JSONObject = {
-    val result = conn("edition")
+    val result = withConnection(conn => conn("edition")
       .find()
       .limit(size)
       .skip(offset)
       .sort("ssgId".fieldOf[Double](-1))
       .map(JSONTransformer.transform(_))
-      .foldLeft(new JSONArray)((array, item) => array.put(item))
+      .foldLeft(new JSONArray)((array, item) => array.put(item)))
     new JSONObject().put("result", result)
   }
 
   @GET
   @Path("/size")
   def dateSearchCardSize(): JSONObject = {
-    new JSONObject().put("result", conn("edition").count)
+    new JSONObject().put("result", withConnection(conn => conn("edition").count))
   }
 }
