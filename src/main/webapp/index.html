@@ -6,8 +6,10 @@
     <script type='text/javascript' src='js/lib/jquery.tmpl.js'></script>
     <script type='text/javascript' src='js/lib/jquery-ui-1.8.17.custom.min.js'></script>
     <script type='text/javascript' src='js/lib/knockout-2.0.0.debug.js'></script>
+    <script type='text/javascript' src='js/lib/dygraph-combined.js'></script>
     <script type='text/javascript' src='js/main.js'></script>
     <script type='text/javascript' src='js/editions.js'></script>
+    <script type='text/javascript' src='js/edition_graph.js'></script>
     <script type='text/javascript' src='js/navigation.js'></script>
     <script type='text/javascript' src='js/price-changes.js'></script>
     <script type='text/javascript' src='js/ajax-table.js'></script>
@@ -203,6 +205,16 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        <!--<div data-bind="visible: navigation.active() == edition_graph, with: edition_graph">-->
+        <div data-bind="visible: navigation.active() == edition_graph">
+            <div data-bind="with: edition_graph">
+            <select data-bind="options: availableEditions, selectedOptions: selectedEdition" size="1"></select>
+            <input type="checkbox" data-bind="checked: foil"></check>
+            </div>
+            <div>
+            <div id="edition-graph"></div>
+                </div>
         </div>
         <!-- upload -->
         <div class="row" data-bind="visible: navigation.active() == upload">

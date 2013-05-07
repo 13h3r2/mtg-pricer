@@ -3,6 +3,7 @@ function Navigation(page) {
         new NavigationItem(this, "Day changes", page.changes.table.load, page.changes),
         new NavigationItem(this, "Month changes", page.monthChanges.table.load, page.monthChanges),
         new NavigationItem(this, "Editions", page.editions.table.load, page.editions),
+        new NavigationItem(this, "Edition Graphs", page.edition_graph.load, page.edition_graph),
         new NavigationItem(this, "Export", null, page.upload)
     ]
     );

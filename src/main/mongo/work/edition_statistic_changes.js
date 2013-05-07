@@ -1,27 +1,29 @@
 m = function () {
-    
-        var result = new Object();
-        result.diff = this.diff;
-        result.changesCount = 1;
-        result.latest = false;
-        if (this.diff != 0) {
-            result.price = 0;
-            emit({
-                "edition":this.item.edition,
-                "foil":this.item.foil,
-                "date":new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate())
-            },
-            result);
-        } else {
-            result.price = this.price;
-            emit({
-                "edition":this.item.edition,
-                "foil":this.item.foil,
-                "date":new Date(this.date.getFullYear(), this.date.getMonth(), 1)
+    if(this.item.condition != "NM/M") {
+        return;
+    }
+    var result = new Object();
+    result.diff = this.diff;
+    result.changesCount = 1;
+    result.latest = false;
+    if (this.diff != 0) {
+        result.price = 0;
+        emit({
+            "edition":this.item.edition,
+            "foil":this.item.foil,
+            "date":new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate())
+        },
+        result);
+    } else {
+        result.price = this.price;
+        emit({
+            "edition":this.item.edition,
+            "foil":this.item.foil,
+            "date":new Date(this.date.getFullYear(), this.date.getMonth(), 1)
 
-            },
-            result);
-        }
+        },
+        result);
+    }
 };
 r = function (key, values) {
     var result = new Object();
@@ -43,7 +45,7 @@ f = function(key, item) {
 db.price2.mapReduce(m, r, {out:{replace:"price2Edition"},finalize:f});
 
 currentPrices = {};
-db.price2Edition.find({}).sort({"_id.date":1}).forEach(function(change) {
+db.price2Edition.find().sort({"_id.date":1}).forEach(function(change) {
     var id = change._id.edition+change._id.foil;
     if(currentPrices[id] == null) {
         if(change.value.price != null) {
