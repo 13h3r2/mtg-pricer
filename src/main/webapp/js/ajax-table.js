@@ -20,7 +20,6 @@ function AjaxTable(page) {
     this.loadPage = function() {
         self.provider.loadPage();
     }
-
 }
 
 function AjaxTableLink(name, offset) {

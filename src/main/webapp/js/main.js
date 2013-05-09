@@ -9,6 +9,8 @@ function Page() {
     this.monthChanges = new MonthChangesPanel(this);
     this.editions = new Editions(this);
     this.edition_graph = new EditionGraph(this);
+    this.card_graph = new CardGraph(this);
+    this.cards = new Cards(this);
     this.upload = new UploadPanel(this);
     this.updateInfo = new UpdateInfo(this);
 

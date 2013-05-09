@@ -10,6 +10,8 @@
     <script type='text/javascript' src='js/main.js'></script>
     <script type='text/javascript' src='js/editions.js'></script>
     <script type='text/javascript' src='js/edition_graph.js'></script>
+    <script type='text/javascript' src='js/card_graph.js'></script>
+    <script type='text/javascript' src='js/cards.js'></script>
     <script type='text/javascript' src='js/navigation.js'></script>
     <script type='text/javascript' src='js/price-changes.js'></script>
     <script type='text/javascript' src='js/ajax-table.js'></script>
@@ -57,8 +59,8 @@
             </div>
 
             <!--day changes-->
-            <div class="row" data-bind="with: changes.table">
-                <div class="span12">
+            <div class="row" data-bind="with: changes">
+                <div class="span12" data-bind="with: table">
                     <div class="pagination pagination-centered">
                         <ul>
                             <!-- ko foreach: pages -->
@@ -71,7 +73,8 @@
                     <table class="table table-bordered table-condensed">
                         <thead>
                         <tr>
-                            <th width="70%">Result</th>
+                            <th width="60%">Result</th>
+                            <th width="10%">Links</th>
                             <th width="10%">Change</th>
                             <th width="20%">Current</th>
                         </tr>
@@ -79,6 +82,7 @@
                         <tbody data-bind="foreach: items">
                         <tr>
                             <td data-bind="text: fullName()">Tundra</td>
+                            <td><a href="#" data-bind="click: $parent.showGraph">Graph</a></td>
                             <td data-bind="text: diffWithSign() , css: { changePlus : diff > 0, changeMinus : diff < 0 }">
                                 +10
                             </td>
@@ -213,8 +217,13 @@
             <input type="checkbox" data-bind="checked: foil"></check>
             </div>
             <div>
-            <div id="edition-graph"></div>
-                </div>
+                <div id="edition-graph"></div>
+            </div>
+        </div>
+        <div data-bind="visible: navigation.active() == card_graph">
+            <div>
+                <div id="card-graph"></div>
+            </div>
         </div>
         <!-- upload -->
         <div class="row" data-bind="visible: navigation.active() == upload">
@@ -222,6 +231,43 @@
                 <input type="file" name="file" class="input-file"/>
                 <input type="submit" class="btn" value="name" name="name"/>
             </form>
+        </div>
+        <!-- cards list -->
+        <div class="row" data-bind="with: cards, visible: navigation.active() == cards">
+            <div class="span12">
+                <form class="form-inline">
+                    <input data-bind="value: name" type="text" id="cardName">
+                    <button type="submit" class="btn" data-bind="click: search">Search</button>
+                </form>
+            </div>
+            <div class="span12">
+                <div class="pagination pagination-centered">
+                    <ul data-bind="with: table">
+                        <!-- ko foreach: pages -->
+                        <li data-bind="css : { active : $parent.currentPage() == offset }">
+                            <a href="#" data-bind="text: name, click: $parent.selectPage">1</a>
+
+                        </li>
+                        <!-- /ko -->
+                    </ul>
+                </div>
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                    <tr>
+                        <th width="60%">Card</th>
+                        <th width="20%">Actions</th>
+                        <th width="20%">Price</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: table.items">
+                    <tr>
+                        <td data-bind="text: fullName()">Polluted Delta</td>
+                        <td><a href="#" data-bind="click: $parent.showGraph">Graph</a></td>
+                        <td data-bind="text: price">price</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

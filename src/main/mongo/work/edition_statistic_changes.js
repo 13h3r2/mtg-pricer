@@ -45,14 +45,15 @@ f = function(key, item) {
 db.price2.mapReduce(m, r, {out:{replace:"price2Edition"},finalize:f});
 
 currentPrices = {};
+
 db.price2Edition.find().sort({"_id.date":1}).forEach(function(change) {
     var id = change._id.edition+change._id.foil;
     if(currentPrices[id] == null) {
         if(change.value.price != null) {
-            currentPrices[id] = change['value'].price;
+            currentPrices[id] = change["value"].price;
         }
     } else {
-        currentPrices[id] += change['value'].diff;
+        currentPrices[id] += change["value"].diff;
         change.value.price = currentPrices[id];
         db.price2Edition.update({"_id":change._id}, {"value":change.value}); 
     }

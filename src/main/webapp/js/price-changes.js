@@ -6,6 +6,7 @@ function PriceChange(name, date, diff, edition, condition, foil, current) {
     this.diff = diff;
     this.foil = foil;
     this.current = current;
+
     this.fullName = function () {
         return this.name + " - " + this.edition + (this.foil ? " FOIL " : "") + " (" + this.condition + ")";
     };
@@ -34,6 +35,13 @@ function ChangesPanel(page) {
         var newDate = new Date(this.date().getTime() - 1000 * 60 * 60 * 24);
         this.date(newDate);
         this.table.load();
+    };
+    this.table.showGraph = function(item) {
+        page.card_graph.name = item.name;
+        page.card_graph.edition = item.edition;
+        page.card_graph.foil = item.foil;
+        page.card_graph.condition = item.condition;
+        page.navigation.activateByName("Card Graphs");
     };
 }
 
