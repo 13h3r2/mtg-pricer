@@ -9,7 +9,7 @@ import ssg.SSGPriceProvider
  */
 object Test extends App {
 
-  new SSGPriceProvider(new Edition("", "5221", Nil))
+  new SSGPriceProvider(new Edition("", "5258", Nil))
     .prices
     .foreach(println _)
 

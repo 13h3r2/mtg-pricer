@@ -22,4 +22,5 @@ function buildCardsList() {
     };
     db.price2.mapReduce(m, r, {out:{replace:"cards"}});
 }
+
 buildCardsList();
